@@ -3,20 +3,20 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PLFA as EPUB | Programming Language Foundations in Agda
+  <title>Versions and Releases | Programming Language Foundations in Agda
 </title><!-- Begin Jekyll SEO tag v2.6.1 -->
 <meta name="generator" content="Jekyll v3.8.7" />
-<meta property="og:title" content="PLFA as EPUB" />
+<meta property="og:title" content="Versions and Releases" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="It has been just over a year and a half since this feature was first requested in #112…" />
-<meta property="og:description" content="It has been just over a year and a half since this feature was first requested in #112…" />
-<link rel="canonical" href="https://plfa.github.io/2020/06/02/plfa-as-epub.html" />
-<meta property="og:url" content="https://plfa.github.io/2020/06/02/plfa-as-epub.html" />
+<meta name="description" content="We’re adding stable releases to PLFA!" />
+<meta property="og:description" content="We’re adding stable releases to PLFA!" />
+<link rel="canonical" href="https://plfa.github.io/2020/07/14/versions-and-releases.html" />
+<meta property="og:url" content="https://plfa.github.io/2020/07/14/versions-and-releases.html" />
 <meta property="og:site_name" content="Programming Language Foundations in Agda" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-06-02T00:00:00+00:00" />
+<meta property="article:published_time" content="2020-07-14T00:00:00+00:00" />
 <script type="application/ld+json">
-{"description":"It has been just over a year and a half since this feature was first requested in #112…","mainEntityOfPage":{"@type":"WebPage","@id":"https://plfa.github.io/2020/06/02/plfa-as-epub.html"},"@type":"BlogPosting","url":"https://plfa.github.io/2020/06/02/plfa-as-epub.html","headline":"PLFA as EPUB","dateModified":"2020-06-02T00:00:00+00:00","datePublished":"2020-06-02T00:00:00+00:00","@context":"https://schema.org"}</script>
+{"description":"We’re adding stable releases to PLFA!","mainEntityOfPage":{"@type":"WebPage","@id":"https://plfa.github.io/2020/07/14/versions-and-releases.html"},"@type":"BlogPosting","url":"https://plfa.github.io/2020/07/14/versions-and-releases.html","headline":"Versions and Releases","dateModified":"2020-07-14T00:00:00+00:00","datePublished":"2020-07-14T00:00:00+00:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"></head>
 <body><header class="site-header" role="banner">
@@ -52,21 +52,34 @@
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">PLFA as EPUB</h1>
+    <h1 class="post-title p-name" itemprop="name headline">Versions and Releases</h1>
     <p class="post-meta">
-      <time class="dt-published" datetime="2020-06-02T00:00:00+00:00" itemprop="datePublished">Jun 2, 2020
+      <time class="dt-published" datetime="2020-07-14T00:00:00+00:00" itemprop="datePublished">Jul 14, 2020
       </time></p>
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <p>It has been just over a year and a half since this feature was first requested in <a href="https://github.com/plfa/plfa.github.io/issues/112">#112</a>…</p>
+    <p>We’re adding stable releases to PLFA!</p>
 
-<p>Thanks to hard work by <a href="https://github.com/mreed20">Michael Reed</a>, and a little elbow grease on our part, it is finally here!</p>
+<p>For the past two years, we’ve tried to do major revisions of the book during winter break and early summer, to ensure that the text remains consistent throughout the teaching period… Inevitably, we fixed bugs, and make small changes here and there, perhaps resulting in a less-than-consistent experience.</p>
 
-<p><a href="https://plfa.github.io/out/epub/plfa.epub">An EPUB version of PLFA!</a></p>
+<p>Starting today, you can be sure that PLFA will remain consistent, since we’re adding stable releases! You can find the releases <a href="https://github.com/plfa/plfa.github.io/releases">on GitHub</a>, and as tags in the Git repository. The releases are numbered using <a href="https://calver.org/">calendar versioning</a> using the <code class="language-plaintext highlighter-rouge">YY0M</code> format, e.g., <code class="language-plaintext highlighter-rouge">20.07</code> was released in July 2020. Each release will have two associated tags.</p>
+
+<ul>
+  <li><a href="https://github.com/plfa/plfa.github.io/releases/tag/dev-20.07"><code class="language-plaintext highlighter-rouge">dev-20.07</code></a> is a copy of the <code class="language-plaintext highlighter-rouge">dev</code> branch, and contains everything you need to work with PLFA;</li>
+  <li><a href="https://github.com/plfa/plfa.github.io/releases/tag/web-20.07"><code class="language-plaintext highlighter-rouge">web-20.07</code></a> is a copy of the web site <em>only</em>, and does not contain Agda sources.</li>
+</ul>
+
+<p>The <code class="language-plaintext highlighter-rouge">web-YY0M</code> releases are useful if you’d like to host a copy of PLFA, but you don’t have all the required dependencies installed. However, if you’d like to view a particular release only, we have you covered! If you’d like to browse PLFA version 20.07, just go to:</p>
+
+<ul>
+  <li><a href="https://plfa.github.io/20.07/">https://plfa.github.io/20.07/</a></li>
+</ul>
+
+<p>Currently, we have the <a href="https://plfa.github.io/20.07/"><code class="language-plaintext highlighter-rouge">20.07</code></a> release, made just before the recent changes, and the <a href="https://plfa.github.io/19.08/"><code class="language-plaintext highlighter-rouge">19.08</code></a> release, the stable release for the past academic year. We’re expecting to release <code class="language-plaintext highlighter-rouge">20.08</code> next month, to provide a stable release for the upcoming academic year, which will include support for the latest version of Agda.</p>
 
 
-  </div><a class="u-url" href="/2020/06/02/plfa-as-epub.html" hidden></a>
+  </div><a class="u-url" href="/2020/07/14/versions-and-releases.html" hidden></a>
 </article>
 
       </div>
