@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Isomorphism: Isomorphism and Embedding | Programming Language Foundations in Agda
+</title><!-- Begin Jekyll SEO tag v2.6.1 -->
+<meta name="generator" content="Jekyll v3.8.7" />
+<meta property="og:title" content="Isomorphism: Isomorphism and Embedding" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Programming Language Foundations in Agda" />
+<meta property="og:description" content="Programming Language Foundations in Agda" />
+<link rel="canonical" href="https://plfa.github.io/2019-08-31/Isomorphism/" />
+<meta property="og:url" content="https://plfa.github.io/2019-08-31/Isomorphism/" />
+<meta property="og:site_name" content="Programming Language Foundations in Agda" />
+<script type="application/ld+json">
+{"description":"Programming Language Foundations in Agda","@type":"WebPage","headline":"Isomorphism: Isomorphism and Embedding","url":"https://plfa.github.io/2019-08-31/Isomorphism/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/2019-08-31/assets/main.css"></head>
+<body><header class="site-header" role="banner">
+
+    <div class="wrapper">
+
+        <a class="site-title" href="/2019-08-31/">Programming Language Foundations in Agda
+</a>
+
+        <nav class="site-nav">
+            <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                    <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                    <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                    <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+            </span>
+
+            <div class="trigger">
+                <a class="page-link" href="/2019-08-31/">The Book</a>
+                <a class="page-link" href="/2019-08-31/Announcements/">Announcements</a>
+                <a class="page-link" href="/2019-08-31/GettingStarted/">Getting Started</a>
+                <a class="page-link" href="/2019-08-31/Citing/">Citing</a>
+                <a class="page-link" href="https://agda-zh.github.io/PLFA-zh/">中文</a>
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+      <h1 class="post-title">Isomorphism: Isomorphism and Embedding</h1>
+  </header>
+
+  <p style="text-align:center;">
+    
+    <a alt="Previous chapter" href="/2019-08-31/Equality/">Prev</a>
+    
+    
+    &bullet;
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Isomorphism.lagda.md">Source</a>
+    
+    
+    &bullet;
+    
+    
+    <a alt="Next chapter" href="/2019-08-31/Connectives/">Next</a>
+    
+</p>
+
+
+  <div class="post-content">
+    <pre class="Agda"><a id="159" class="Keyword">module</a> <a id="166" href="/2019-08-31/Isomorphism/" class="Module">plfa.Isomorphism</a> <a id="183" class="Keyword">where</a>
+</pre>
+<p>This section introduces isomorphism as a way of asserting that two
+types are equal, and embedding as a way of asserting that one type is
+smaller than another.  We apply isomorphisms in the next chapter
+to demonstrate that operations on types such as product and sum
+satisfy properties akin to associativity, commutativity, and
+distributivity.</p>
+
+<h2 id="imports">Imports</h2>
+
+<pre class="Agda"><a id="554" class="Keyword">import</a> <a id="561" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Relation.Binary.PropositionalEquality</a> <a id="599" class="Symbol">as</a> <a id="602" class="Module">Eq</a>
+<a id="605" class="Keyword">open</a> <a id="610" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html" class="Module">Eq</a> <a id="613" class="Keyword">using</a> <a id="619" class="Symbol">(</a><a id="620" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">_≡_</a><a id="623" class="Symbol">;</a> <a id="625" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="629" class="Symbol">;</a> <a id="631" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#1090" class="Function">cong</a><a id="635" class="Symbol">;</a> <a id="637" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html#1308" class="Function">cong-app</a><a id="645" class="Symbol">)</a>
+<a id="647" class="Keyword">open</a> <a id="652" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2499" class="Module">Eq.≡-Reasoning</a>
+<a id="667" class="Keyword">open</a> <a id="672" class="Keyword">import</a> <a id="679" href="https://agda.github.io/agda-stdlib/v1.1/Data.Nat.html" class="Module">Data.Nat</a> <a id="688" class="Keyword">using</a> <a id="694" class="Symbol">(</a><a id="695" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a><a id="696" class="Symbol">;</a> <a id="698" href="Agda.Builtin.Nat.html#183" class="InductiveConstructor">zero</a><a id="702" class="Symbol">;</a> <a id="704" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a><a id="707" class="Symbol">;</a> <a id="709" href="Agda.Builtin.Nat.html#298" class="Primitive Operator">_+_</a><a id="712" class="Symbol">)</a>
+<a id="714" class="Keyword">open</a> <a id="719" class="Keyword">import</a> <a id="726" href="https://agda.github.io/agda-stdlib/v1.1/Data.Nat.Properties.html" class="Module">Data.Nat.Properties</a> <a id="746" class="Keyword">using</a> <a id="752" class="Symbol">(</a><a id="753" href="https://agda.github.io/agda-stdlib/v1.1/Data.Nat.Properties.html#11911" class="Function">+-comm</a><a id="759" class="Symbol">)</a>
+</pre>
+
+<h2 id="lambda-expressions">Lambda expressions</h2>
+
+<p>The chapter begins with a few preliminaries that will be useful
+here and elsewhere: lambda expressions, function composition, and
+extensionality.</p>
+
+<p><em>Lambda expressions</em> provide a compact way to define functions without
+naming them.  A term of the form</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>λ{ P₁ → N₁; ⋯ ; Pₙ → Nₙ }
+</code></pre></div></div>
+
+<p>is equivalent to a function <code class="highlighter-rouge">f</code> defined by the equations</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>f P₁ = N₁
+⋯
+f Pₙ = Nₙ
+</code></pre></div></div>
+
+<p>where the <code class="highlighter-rouge">Pₙ</code> are patterns (left-hand sides of an equation) and the
+<code class="highlighter-rouge">Nₙ</code> are expressions (right-hand side of an equation).</p>
+
+<p>In the case that there is one equation and the pattern is a variable,
+we may also use the syntax</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>λ x → N
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>λ (x : A) → N
+</code></pre></div></div>
+
+<p>both of which are equivalent to <code class="highlighter-rouge">λ{x → N}</code>. The latter allows one to
+specify the domain of the function.</p>
+
+<p>Often using an anonymous lambda expression is more convenient than
+using a named function: it avoids a lengthy type declaration; and the
+definition appears exactly where the function is used, so there is no
+need for the writer to remember to declare it in advance, or for the
+reader to search for the definition in the code.</p>
+
+<h2 id="function-composition">Function composition</h2>
+
+<p>In what follows, we will make use of function composition:</p>
+<pre class="Agda"><a id="_∘_"></a><a id="1946" href="/2019-08-31/Isomorphism/#1946" class="Function Operator">_∘_</a> <a id="1950" class="Symbol">:</a> <a id="1952" class="Symbol">∀</a> <a id="1954" class="Symbol">{</a><a id="1955" href="plfa.Isomorphism.html#1955" class="Bound">A</a> <a id="1957" href="plfa.Isomorphism.html#1957" class="Bound">B</a> <a id="1959" href="plfa.Isomorphism.html#1959" class="Bound">C</a> <a id="1961" class="Symbol">:</a> <a id="1963" class="PrimitiveType">Set</a><a id="1966" class="Symbol">}</a> <a id="1968" class="Symbol">→</a> <a id="1970" class="Symbol">(</a><a id="1971" href="plfa.Isomorphism.html#1957" class="Bound">B</a> <a id="1973" class="Symbol">→</a> <a id="1975" href="plfa.Isomorphism.html#1959" class="Bound">C</a><a id="1976" class="Symbol">)</a> <a id="1978" class="Symbol">→</a> <a id="1980" class="Symbol">(</a><a id="1981" href="plfa.Isomorphism.html#1955" class="Bound">A</a> <a id="1983" class="Symbol">→</a> <a id="1985" href="plfa.Isomorphism.html#1957" class="Bound">B</a><a id="1986" class="Symbol">)</a> <a id="1988" class="Symbol">→</a> <a id="1990" class="Symbol">(</a><a id="1991" href="plfa.Isomorphism.html#1955" class="Bound">A</a> <a id="1993" class="Symbol">→</a> <a id="1995" href="plfa.Isomorphism.html#1959" class="Bound">C</a><a id="1996" class="Symbol">)</a>
+<a id="1998" class="Symbol">(</a><a id="1999" href="/2019-08-31/Isomorphism/#1999" class="Bound">g</a> <a id="2001" href="plfa.Isomorphism.html#1946" class="Function Operator">∘</a> <a id="2003" href="plfa.Isomorphism.html#2003" class="Bound">f</a><a id="2004" class="Symbol">)</a> <a id="2006" href="plfa.Isomorphism.html#2006" class="Bound">x</a>  <a id="2009" class="Symbol">=</a> <a id="2011" href="plfa.Isomorphism.html#1999" class="Bound">g</a> <a id="2013" class="Symbol">(</a><a id="2014" href="plfa.Isomorphism.html#2003" class="Bound">f</a> <a id="2016" href="plfa.Isomorphism.html#2006" class="Bound">x</a><a id="2017" class="Symbol">)</a>
+</pre>
+<p>Thus, <code class="highlighter-rouge">g ∘ f</code> is the function that first applies <code class="highlighter-rouge">f</code> and
+then applies <code class="highlighter-rouge">g</code>.  An equivalent definition, exploiting lambda
+expressions, is as follows:</p>
+<pre class="Agda"><a id="_∘′_"></a><a id="2175" href="/2019-08-31/Isomorphism/#2175" class="Function Operator">_∘′_</a> <a id="2180" class="Symbol">:</a> <a id="2182" class="Symbol">∀</a> <a id="2184" class="Symbol">{</a><a id="2185" href="plfa.Isomorphism.html#2185" class="Bound">A</a> <a id="2187" href="plfa.Isomorphism.html#2187" class="Bound">B</a> <a id="2189" href="plfa.Isomorphism.html#2189" class="Bound">C</a> <a id="2191" class="Symbol">:</a> <a id="2193" class="PrimitiveType">Set</a><a id="2196" class="Symbol">}</a> <a id="2198" class="Symbol">→</a> <a id="2200" class="Symbol">(</a><a id="2201" href="plfa.Isomorphism.html#2187" class="Bound">B</a> <a id="2203" class="Symbol">→</a> <a id="2205" href="plfa.Isomorphism.html#2189" class="Bound">C</a><a id="2206" class="Symbol">)</a> <a id="2208" class="Symbol">→</a> <a id="2210" class="Symbol">(</a><a id="2211" href="plfa.Isomorphism.html#2185" class="Bound">A</a> <a id="2213" class="Symbol">→</a> <a id="2215" href="plfa.Isomorphism.html#2187" class="Bound">B</a><a id="2216" class="Symbol">)</a> <a id="2218" class="Symbol">→</a> <a id="2220" class="Symbol">(</a><a id="2221" href="plfa.Isomorphism.html#2185" class="Bound">A</a> <a id="2223" class="Symbol">→</a> <a id="2225" href="plfa.Isomorphism.html#2189" class="Bound">C</a><a id="2226" class="Symbol">)</a>
+<a id="2228" href="/2019-08-31/Isomorphism/#2228" class="Bound">g</a> <a id="2230" href="plfa.Isomorphism.html#2175" class="Function Operator">∘′</a> <a id="2233" href="plfa.Isomorphism.html#2233" class="Bound">f</a>  <a id="2236" class="Symbol">=</a>  <a id="2239" class="Symbol">λ</a> <a id="2241" href="plfa.Isomorphism.html#2241" class="Bound">x</a> <a id="2243" class="Symbol">→</a> <a id="2245" href="plfa.Isomorphism.html#2228" class="Bound">g</a> <a id="2247" class="Symbol">(</a><a id="2248" href="plfa.Isomorphism.html#2233" class="Bound">f</a> <a id="2250" href="plfa.Isomorphism.html#2241" class="Bound">x</a><a id="2251" class="Symbol">)</a>
+</pre>
+
+<h2 id="extensionality">Extensionality</h2>
+
+<p>Extensionality asserts that the only way to distinguish functions is
+by applying them; if two functions applied to the same argument always
+yield the same result, then they are the same function.  It is the
+converse of <code class="highlighter-rouge">cong-app</code>, as introduced
+<a href="/2019-08-31/Equality/#cong">earlier</a>.</p>
+
+<p>Agda does not presume extensionality, but we can postulate that it holds:</p>
+<pre class="Agda"><a id="2666" class="Keyword">postulate</a>
+  <a id="extensionality"></a><a id="2678" href="/2019-08-31/Isomorphism/#2678" class="Postulate">extensionality</a> <a id="2693" class="Symbol">:</a> <a id="2695" class="Symbol">∀</a> <a id="2697" class="Symbol">{</a><a id="2698" href="plfa.Isomorphism.html#2698" class="Bound">A</a> <a id="2700" href="plfa.Isomorphism.html#2700" class="Bound">B</a> <a id="2702" class="Symbol">:</a> <a id="2704" class="PrimitiveType">Set</a><a id="2707" class="Symbol">}</a> <a id="2709" class="Symbol">{</a><a id="2710" href="plfa.Isomorphism.html#2710" class="Bound">f</a> <a id="2712" href="plfa.Isomorphism.html#2712" class="Bound">g</a> <a id="2714" class="Symbol">:</a> <a id="2716" href="plfa.Isomorphism.html#2698" class="Bound">A</a> <a id="2718" class="Symbol">→</a> <a id="2720" href="plfa.Isomorphism.html#2700" class="Bound">B</a><a id="2721" class="Symbol">}</a>
+    <a id="2727" class="Symbol">→</a> <a id="2729" class="Symbol">(∀</a> <a id="2732" class="Symbol">(</a><a id="2733" href="/2019-08-31/Isomorphism/#2733" class="Bound">x</a> <a id="2735" class="Symbol">:</a> <a id="2737" href="plfa.Isomorphism.html#2698" class="Bound">A</a><a id="2738" class="Symbol">)</a> <a id="2740" class="Symbol">→</a> <a id="2742" href="plfa.Isomorphism.html#2710" class="Bound">f</a> <a id="2744" href="plfa.Isomorphism.html#2733" class="Bound">x</a> <a id="2746" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="2748" href="plfa.Isomorphism.html#2712" class="Bound">g</a> <a id="2750" href="plfa.Isomorphism.html#2733" class="Bound">x</a><a id="2751" class="Symbol">)</a>
+      <a id="2759" class="Comment">-----------------------</a>
+    <a id="2787" class="Symbol">→</a> <a id="2789" href="/2019-08-31/Isomorphism/#2710" class="Bound">f</a> <a id="2791" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="2793" href="plfa.Isomorphism.html#2712" class="Bound">g</a>
+</pre>
+<p>Postulating extensionality does not lead to difficulties, as it is
+known to be consistent with the theory that underlies Agda.</p>
+
+<p>As an example, consider that we need results from two libraries,
+one where addition is defined, as in
+Chapter <a href="/2019-08-31/Naturals/">Naturals</a>,
+and one where it is defined the other way around.</p>
+<pre class="Agda"><a id="_+′_"></a><a id="3133" href="/2019-08-31/Isomorphism/#3133" class="Function Operator">_+′_</a> <a id="3138" class="Symbol">:</a> <a id="3140" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a> <a id="3142" class="Symbol">→</a> <a id="3144" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a> <a id="3146" class="Symbol">→</a> <a id="3148" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a>
+<a id="3150" href="/2019-08-31/Isomorphism/#3150" class="Bound">m</a> <a id="3152" href="plfa.Isomorphism.html#3133" class="Function Operator">+′</a> <a id="3155" href="Agda.Builtin.Nat.html#183" class="InductiveConstructor">zero</a>  <a id="3161" class="Symbol">=</a> <a id="3163" href="plfa.Isomorphism.html#3150" class="Bound">m</a>
+<a id="3165" href="/2019-08-31/Isomorphism/#3165" class="Bound">m</a> <a id="3167" href="plfa.Isomorphism.html#3133" class="Function Operator">+′</a> <a id="3170" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a> <a id="3174" href="plfa.Isomorphism.html#3174" class="Bound">n</a> <a id="3176" class="Symbol">=</a> <a id="3178" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a> <a id="3182" class="Symbol">(</a><a id="3183" href="plfa.Isomorphism.html#3165" class="Bound">m</a> <a id="3185" href="plfa.Isomorphism.html#3133" class="Function Operator">+′</a> <a id="3188" href="plfa.Isomorphism.html#3174" class="Bound">n</a><a id="3189" class="Symbol">)</a>
+</pre>
+<p>Applying commutativity, it is easy to show that both operators always
+return the same result given the same arguments:</p>
+<pre class="Agda"><a id="same-app"></a><a id="3318" href="/2019-08-31/Isomorphism/#3318" class="Function">same-app</a> <a id="3327" class="Symbol">:</a> <a id="3329" class="Symbol">∀</a> <a id="3331" class="Symbol">(</a><a id="3332" href="plfa.Isomorphism.html#3332" class="Bound">m</a> <a id="3334" href="plfa.Isomorphism.html#3334" class="Bound">n</a> <a id="3336" class="Symbol">:</a> <a id="3338" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a><a id="3339" class="Symbol">)</a> <a id="3341" class="Symbol">→</a> <a id="3343" href="plfa.Isomorphism.html#3332" class="Bound">m</a> <a id="3345" href="plfa.Isomorphism.html#3133" class="Function Operator">+′</a> <a id="3348" href="plfa.Isomorphism.html#3334" class="Bound">n</a> <a id="3350" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="3352" href="plfa.Isomorphism.html#3332" class="Bound">m</a> <a id="3354" href="Agda.Builtin.Nat.html#298" class="Primitive Operator">+</a> <a id="3356" href="plfa.Isomorphism.html#3334" class="Bound">n</a>
+<a id="3358" href="/2019-08-31/Isomorphism/#3318" class="Function">same-app</a> <a id="3367" href="plfa.Isomorphism.html#3367" class="Bound">m</a> <a id="3369" href="plfa.Isomorphism.html#3369" class="Bound">n</a> <a id="3371" class="Keyword">rewrite</a> <a id="3379" href="https://agda.github.io/agda-stdlib/v1.1/Data.Nat.Properties.html#11911" class="Function">+-comm</a> <a id="3386" href="plfa.Isomorphism.html#3367" class="Bound">m</a> <a id="3388" href="plfa.Isomorphism.html#3369" class="Bound">n</a> <a id="3390" class="Symbol">=</a> <a id="3392" href="plfa.Isomorphism.html#3413" class="Function">helper</a> <a id="3399" href="plfa.Isomorphism.html#3367" class="Bound">m</a> <a id="3401" href="plfa.Isomorphism.html#3369" class="Bound">n</a>
+  <a id="3405" class="Keyword">where</a>
+  <a id="3413" href="/2019-08-31/Isomorphism/#3413" class="Function">helper</a> <a id="3420" class="Symbol">:</a> <a id="3422" class="Symbol">∀</a> <a id="3424" class="Symbol">(</a><a id="3425" href="plfa.Isomorphism.html#3425" class="Bound">m</a> <a id="3427" href="plfa.Isomorphism.html#3427" class="Bound">n</a> <a id="3429" class="Symbol">:</a> <a id="3431" href="Agda.Builtin.Nat.html#165" class="Datatype">ℕ</a><a id="3432" class="Symbol">)</a> <a id="3434" class="Symbol">→</a> <a id="3436" href="plfa.Isomorphism.html#3425" class="Bound">m</a> <a id="3438" href="plfa.Isomorphism.html#3133" class="Function Operator">+′</a> <a id="3441" href="plfa.Isomorphism.html#3427" class="Bound">n</a> <a id="3443" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="3445" href="plfa.Isomorphism.html#3427" class="Bound">n</a> <a id="3447" href="Agda.Builtin.Nat.html#298" class="Primitive Operator">+</a> <a id="3449" href="plfa.Isomorphism.html#3425" class="Bound">m</a>
+  <a id="3453" href="/2019-08-31/Isomorphism/#3413" class="Function">helper</a> <a id="3460" href="plfa.Isomorphism.html#3460" class="Bound">m</a> <a id="3462" href="Agda.Builtin.Nat.html#183" class="InductiveConstructor">zero</a>    <a id="3470" class="Symbol">=</a> <a id="3472" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a>
+  <a id="3479" href="/2019-08-31/Isomorphism/#3413" class="Function">helper</a> <a id="3486" href="plfa.Isomorphism.html#3486" class="Bound">m</a> <a id="3488" class="Symbol">(</a><a id="3489" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a> <a id="3493" href="plfa.Isomorphism.html#3493" class="Bound">n</a><a id="3494" class="Symbol">)</a> <a id="3496" class="Symbol">=</a> <a id="3498" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#1090" class="Function">cong</a> <a id="3503" href="Agda.Builtin.Nat.html#196" class="InductiveConstructor">suc</a> <a id="3507" class="Symbol">(</a><a id="3508" href="plfa.Isomorphism.html#3413" class="Function">helper</a> <a id="3515" href="plfa.Isomorphism.html#3486" class="Bound">m</a> <a id="3517" href="plfa.Isomorphism.html#3493" class="Bound">n</a><a id="3518" class="Symbol">)</a>
+</pre>
+<p>However, it might be convenient to assert that the two operators are
+actually indistinguishable. This we can do via two applications of
+extensionality:</p>
+<pre class="Agda"><a id="same"></a><a id="3680" href="/2019-08-31/Isomorphism/#3680" class="Function">same</a> <a id="3685" class="Symbol">:</a> <a id="3687" href="plfa.Isomorphism.html#3133" class="Function Operator">_+′_</a> <a id="3692" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="3694" href="Agda.Builtin.Nat.html#298" class="Primitive Operator">_+_</a>
+<a id="3698" href="/2019-08-31/Isomorphism/#3680" class="Function">same</a> <a id="3703" class="Symbol">=</a> <a id="3705" href="plfa.Isomorphism.html#2678" class="Postulate">extensionality</a> <a id="3720" class="Symbol">(λ</a> <a id="3723" href="plfa.Isomorphism.html#3723" class="Bound">m</a> <a id="3725" class="Symbol">→</a> <a id="3727" href="plfa.Isomorphism.html#2678" class="Postulate">extensionality</a> <a id="3742" class="Symbol">(λ</a> <a id="3745" href="plfa.Isomorphism.html#3745" class="Bound">n</a> <a id="3747" class="Symbol">→</a> <a id="3749" href="plfa.Isomorphism.html#3318" class="Function">same-app</a> <a id="3758" href="plfa.Isomorphism.html#3723" class="Bound">m</a> <a id="3760" href="plfa.Isomorphism.html#3745" class="Bound">n</a><a id="3761" class="Symbol">))</a>
+</pre>
+<p>We occasionally need to postulate extensionality in what follows.</p>
+
+<p>More generally, we may wish to postulate extensionality for
+dependent functions.</p>
+<pre class="Agda"><a id="3920" class="Keyword">postulate</a>
+  <a id="∀-extensionality"></a><a id="3932" href="/2019-08-31/Isomorphism/#3932" class="Postulate">∀-extensionality</a> <a id="3949" class="Symbol">:</a> <a id="3951" class="Symbol">∀</a> <a id="3953" class="Symbol">{</a><a id="3954" href="plfa.Isomorphism.html#3954" class="Bound">A</a> <a id="3956" class="Symbol">:</a> <a id="3958" class="PrimitiveType">Set</a><a id="3961" class="Symbol">}</a> <a id="3963" class="Symbol">{</a><a id="3964" href="plfa.Isomorphism.html#3964" class="Bound">B</a> <a id="3966" class="Symbol">:</a> <a id="3968" href="plfa.Isomorphism.html#3954" class="Bound">A</a> <a id="3970" class="Symbol">→</a> <a id="3972" class="PrimitiveType">Set</a><a id="3975" class="Symbol">}</a> <a id="3977" class="Symbol">{</a><a id="3978" href="plfa.Isomorphism.html#3978" class="Bound">f</a> <a id="3980" href="plfa.Isomorphism.html#3980" class="Bound">g</a> <a id="3982" class="Symbol">:</a> <a id="3984" class="Symbol">∀(</a><a id="3986" href="plfa.Isomorphism.html#3986" class="Bound">x</a> <a id="3988" class="Symbol">:</a> <a id="3990" href="plfa.Isomorphism.html#3954" class="Bound">A</a><a id="3991" class="Symbol">)</a> <a id="3993" class="Symbol">→</a> <a id="3995" href="plfa.Isomorphism.html#3964" class="Bound">B</a> <a id="3997" href="plfa.Isomorphism.html#3986" class="Bound">x</a><a id="3998" class="Symbol">}</a>
+    <a id="4004" class="Symbol">→</a> <a id="4006" class="Symbol">(∀</a> <a id="4009" class="Symbol">(</a><a id="4010" href="/2019-08-31/Isomorphism/#4010" class="Bound">x</a> <a id="4012" class="Symbol">:</a> <a id="4014" href="plfa.Isomorphism.html#3954" class="Bound">A</a><a id="4015" class="Symbol">)</a> <a id="4017" class="Symbol">→</a> <a id="4019" href="plfa.Isomorphism.html#3978" class="Bound">f</a> <a id="4021" href="plfa.Isomorphism.html#4010" class="Bound">x</a> <a id="4023" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4025" href="plfa.Isomorphism.html#3980" class="Bound">g</a> <a id="4027" href="plfa.Isomorphism.html#4010" class="Bound">x</a><a id="4028" class="Symbol">)</a>
+      <a id="4036" class="Comment">-----------------------</a>
+    <a id="4064" class="Symbol">→</a> <a id="4066" href="/2019-08-31/Isomorphism/#3978" class="Bound">f</a> <a id="4068" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4070" href="plfa.Isomorphism.html#3980" class="Bound">g</a>
+</pre>
+<p>Here the type of <code class="highlighter-rouge">f</code> and <code class="highlighter-rouge">g</code> has changed from <code class="highlighter-rouge">A → B</code> to
+<code class="highlighter-rouge">∀ (x : A) → B x</code>, generalising ordinary functions to
+dependent functions.</p>
+
+<h2 id="isomorphism">Isomorphism</h2>
+
+<p>Two sets are isomorphic if they are in one-to-one correspondence.
+Here is a formal definition of isomorphism:</p>
+<pre class="Agda"><a id="4340" class="Keyword">infix</a> <a id="4346" class="Number">0</a> <a id="4348" href="/2019-08-31/Isomorphism/#4359" class="Record Operator">_≃_</a>
+<a id="4352" class="Keyword">record</a> <a id="_≃_"></a><a id="4359" href="/2019-08-31/Isomorphism/#4359" class="Record Operator">_≃_</a> <a id="4363" class="Symbol">(</a><a id="4364" href="plfa.Isomorphism.html#4364" class="Bound">A</a> <a id="4366" href="plfa.Isomorphism.html#4366" class="Bound">B</a> <a id="4368" class="Symbol">:</a> <a id="4370" class="PrimitiveType">Set</a><a id="4373" class="Symbol">)</a> <a id="4375" class="Symbol">:</a> <a id="4377" class="PrimitiveType">Set</a> <a id="4381" class="Keyword">where</a>
+  <a id="4389" class="Keyword">field</a>
+    <a id="_≃_.to"></a><a id="4399" href="/2019-08-31/Isomorphism/#4399" class="Field">to</a>   <a id="4404" class="Symbol">:</a> <a id="4406" href="plfa.Isomorphism.html#4364" class="Bound">A</a> <a id="4408" class="Symbol">→</a> <a id="4410" href="plfa.Isomorphism.html#4366" class="Bound">B</a>
+    <a id="_≃_.from"></a><a id="4416" href="/2019-08-31/Isomorphism/#4416" class="Field">from</a> <a id="4421" class="Symbol">:</a> <a id="4423" href="plfa.Isomorphism.html#4366" class="Bound">B</a> <a id="4425" class="Symbol">→</a> <a id="4427" href="plfa.Isomorphism.html#4364" class="Bound">A</a>
+    <a id="_≃_.from∘to"></a><a id="4433" href="/2019-08-31/Isomorphism/#4433" class="Field">from∘to</a> <a id="4441" class="Symbol">:</a> <a id="4443" class="Symbol">∀</a> <a id="4445" class="Symbol">(</a><a id="4446" href="plfa.Isomorphism.html#4446" class="Bound">x</a> <a id="4448" class="Symbol">:</a> <a id="4450" href="plfa.Isomorphism.html#4364" class="Bound">A</a><a id="4451" class="Symbol">)</a> <a id="4453" class="Symbol">→</a> <a id="4455" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="4460" class="Symbol">(</a><a id="4461" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="4464" href="plfa.Isomorphism.html#4446" class="Bound">x</a><a id="4465" class="Symbol">)</a> <a id="4467" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4469" href="plfa.Isomorphism.html#4446" class="Bound">x</a>
+    <a id="_≃_.to∘from"></a><a id="4475" href="/2019-08-31/Isomorphism/#4475" class="Field">to∘from</a> <a id="4483" class="Symbol">:</a> <a id="4485" class="Symbol">∀</a> <a id="4487" class="Symbol">(</a><a id="4488" href="plfa.Isomorphism.html#4488" class="Bound">y</a> <a id="4490" class="Symbol">:</a> <a id="4492" href="plfa.Isomorphism.html#4366" class="Bound">B</a><a id="4493" class="Symbol">)</a> <a id="4495" class="Symbol">→</a> <a id="4497" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="4500" class="Symbol">(</a><a id="4501" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="4506" href="plfa.Isomorphism.html#4488" class="Bound">y</a><a id="4507" class="Symbol">)</a> <a id="4509" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="4511" href="plfa.Isomorphism.html#4488" class="Bound">y</a>
+<a id="4513" class="Keyword">open</a> <a id="4518" href="/2019-08-31/Isomorphism/#4359" class="Module Operator">_≃_</a>
+</pre>
+<p>Let’s unpack the definition. An isomorphism between sets <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code> consists
+of four things:</p>
+<ul>
+  <li>A function <code class="highlighter-rouge">to</code> from <code class="highlighter-rouge">A</code> to <code class="highlighter-rouge">B</code>,</li>
+  <li>A function <code class="highlighter-rouge">from</code> from <code class="highlighter-rouge">B</code> back to <code class="highlighter-rouge">A</code>,</li>
+  <li>Evidence <code class="highlighter-rouge">from∘to</code> asserting that <code class="highlighter-rouge">from</code> is a <em>left-inverse</em> for <code class="highlighter-rouge">to</code>,</li>
+  <li>Evidence <code class="highlighter-rouge">to∘from</code> asserting that <code class="highlighter-rouge">from</code> is a <em>right-inverse</em> for <code class="highlighter-rouge">to</code>.</li>
+</ul>
+
+<p>In particular, the third asserts that <code class="highlighter-rouge">from ∘ to</code> is the identity, and
+the fourth that <code class="highlighter-rouge">to ∘ from</code> is the identity, hence the names.
+The declaration <code class="highlighter-rouge">open _≃_</code> makes available the names <code class="highlighter-rouge">to</code>, <code class="highlighter-rouge">from</code>,
+<code class="highlighter-rouge">from∘to</code>, and <code class="highlighter-rouge">to∘from</code>, otherwise we would need to write <code class="highlighter-rouge">_≃_.to</code> and so on.</p>
+
+<p>The above is our first use of records. A record declaration is equivalent
+to a corresponding inductive data declaration:</p>
+<pre class="Agda"><a id="5250" class="Keyword">data</a> <a id="_≃′_"></a><a id="5255" href="/2019-08-31/Isomorphism/#5255" class="Datatype Operator">_≃′_</a> <a id="5260" class="Symbol">(</a><a id="5261" href="plfa.Isomorphism.html#5261" class="Bound">A</a> <a id="5263" href="plfa.Isomorphism.html#5263" class="Bound">B</a> <a id="5265" class="Symbol">:</a> <a id="5267" class="PrimitiveType">Set</a><a id="5270" class="Symbol">):</a> <a id="5273" class="PrimitiveType">Set</a> <a id="5277" class="Keyword">where</a>
+  <a id="_≃′_.mk-≃′"></a><a id="5285" href="/2019-08-31/Isomorphism/#5285" class="InductiveConstructor">mk-≃′</a> <a id="5291" class="Symbol">:</a> <a id="5293" class="Symbol">∀</a> <a id="5295" class="Symbol">(</a><a id="5296" href="plfa.Isomorphism.html#5296" class="Bound">to</a> <a id="5299" class="Symbol">:</a> <a id="5301" href="plfa.Isomorphism.html#5261" class="Bound">A</a> <a id="5303" class="Symbol">→</a> <a id="5305" href="plfa.Isomorphism.html#5263" class="Bound">B</a><a id="5306" class="Symbol">)</a> <a id="5308" class="Symbol">→</a>
+          <a id="5320" class="Symbol">∀</a> <a id="5322" class="Symbol">(</a><a id="5323" href="/2019-08-31/Isomorphism/#5323" class="Bound">from</a> <a id="5328" class="Symbol">:</a> <a id="5330" href="plfa.Isomorphism.html#5263" class="Bound">B</a> <a id="5332" class="Symbol">→</a> <a id="5334" href="plfa.Isomorphism.html#5261" class="Bound">A</a><a id="5335" class="Symbol">)</a> <a id="5337" class="Symbol">→</a>
+          <a id="5349" class="Symbol">∀</a> <a id="5351" class="Symbol">(</a><a id="5352" href="/2019-08-31/Isomorphism/#5352" class="Bound">from∘to</a> <a id="5360" class="Symbol">:</a> <a id="5362" class="Symbol">(∀</a> <a id="5365" class="Symbol">(</a><a id="5366" href="plfa.Isomorphism.html#5366" class="Bound">x</a> <a id="5368" class="Symbol">:</a> <a id="5370" href="plfa.Isomorphism.html#5261" class="Bound">A</a><a id="5371" class="Symbol">)</a> <a id="5373" class="Symbol">→</a> <a id="5375" href="plfa.Isomorphism.html#5323" class="Bound">from</a> <a id="5380" class="Symbol">(</a><a id="5381" href="plfa.Isomorphism.html#5296" class="Bound">to</a> <a id="5384" href="plfa.Isomorphism.html#5366" class="Bound">x</a><a id="5385" class="Symbol">)</a> <a id="5387" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="5389" href="plfa.Isomorphism.html#5366" class="Bound">x</a><a id="5390" class="Symbol">))</a> <a id="5393" class="Symbol">→</a>
+          <a id="5405" class="Symbol">∀</a> <a id="5407" class="Symbol">(</a><a id="5408" href="/2019-08-31/Isomorphism/#5408" class="Bound">to∘from</a> <a id="5416" class="Symbol">:</a> <a id="5418" class="Symbol">(∀</a> <a id="5421" class="Symbol">(</a><a id="5422" href="plfa.Isomorphism.html#5422" class="Bound">y</a> <a id="5424" class="Symbol">:</a> <a id="5426" href="plfa.Isomorphism.html#5263" class="Bound">B</a><a id="5427" class="Symbol">)</a> <a id="5429" class="Symbol">→</a> <a id="5431" href="plfa.Isomorphism.html#5296" class="Bound">to</a> <a id="5434" class="Symbol">(</a><a id="5435" href="plfa.Isomorphism.html#5323" class="Bound">from</a> <a id="5440" href="plfa.Isomorphism.html#5422" class="Bound">y</a><a id="5441" class="Symbol">)</a> <a id="5443" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="5445" href="plfa.Isomorphism.html#5422" class="Bound">y</a><a id="5446" class="Symbol">))</a> <a id="5449" class="Symbol">→</a>
+          <a id="5461" href="/2019-08-31/Isomorphism/#5261" class="Bound">A</a> <a id="5463" href="plfa.Isomorphism.html#5255" class="Datatype Operator">≃′</a> <a id="5466" href="plfa.Isomorphism.html#5263" class="Bound">B</a>
+
+<a id="to′"></a><a id="5469" href="/2019-08-31/Isomorphism/#5469" class="Function">to′</a> <a id="5473" class="Symbol">:</a> <a id="5475" class="Symbol">∀</a> <a id="5477" class="Symbol">{</a><a id="5478" href="plfa.Isomorphism.html#5478" class="Bound">A</a> <a id="5480" href="plfa.Isomorphism.html#5480" class="Bound">B</a> <a id="5482" class="Symbol">:</a> <a id="5484" class="PrimitiveType">Set</a><a id="5487" class="Symbol">}</a> <a id="5489" class="Symbol">→</a> <a id="5491" class="Symbol">(</a><a id="5492" href="plfa.Isomorphism.html#5478" class="Bound">A</a> <a id="5494" href="plfa.Isomorphism.html#5255" class="Datatype Operator">≃′</a> <a id="5497" href="plfa.Isomorphism.html#5480" class="Bound">B</a><a id="5498" class="Symbol">)</a> <a id="5500" class="Symbol">→</a> <a id="5502" class="Symbol">(</a><a id="5503" href="plfa.Isomorphism.html#5478" class="Bound">A</a> <a id="5505" class="Symbol">→</a> <a id="5507" href="plfa.Isomorphism.html#5480" class="Bound">B</a><a id="5508" class="Symbol">)</a>
+<a id="5510" href="/2019-08-31/Isomorphism/#5469" class="Function">to′</a> <a id="5514" class="Symbol">(</a><a id="5515" href="plfa.Isomorphism.html#5285" class="InductiveConstructor">mk-≃′</a> <a id="5521" href="plfa.Isomorphism.html#5521" class="Bound">f</a> <a id="5523" href="plfa.Isomorphism.html#5523" class="Bound">g</a> <a id="5525" href="plfa.Isomorphism.html#5525" class="Bound">g∘f</a> <a id="5529" href="plfa.Isomorphism.html#5529" class="Bound">f∘g</a><a id="5532" class="Symbol">)</a> <a id="5534" class="Symbol">=</a> <a id="5536" href="plfa.Isomorphism.html#5521" class="Bound">f</a>
+
+<a id="from′"></a><a id="5539" href="/2019-08-31/Isomorphism/#5539" class="Function">from′</a> <a id="5545" class="Symbol">:</a> <a id="5547" class="Symbol">∀</a> <a id="5549" class="Symbol">{</a><a id="5550" href="plfa.Isomorphism.html#5550" class="Bound">A</a> <a id="5552" href="plfa.Isomorphism.html#5552" class="Bound">B</a> <a id="5554" class="Symbol">:</a> <a id="5556" class="PrimitiveType">Set</a><a id="5559" class="Symbol">}</a> <a id="5561" class="Symbol">→</a> <a id="5563" class="Symbol">(</a><a id="5564" href="plfa.Isomorphism.html#5550" class="Bound">A</a> <a id="5566" href="plfa.Isomorphism.html#5255" class="Datatype Operator">≃′</a> <a id="5569" href="plfa.Isomorphism.html#5552" class="Bound">B</a><a id="5570" class="Symbol">)</a> <a id="5572" class="Symbol">→</a> <a id="5574" class="Symbol">(</a><a id="5575" href="plfa.Isomorphism.html#5552" class="Bound">B</a> <a id="5577" class="Symbol">→</a> <a id="5579" href="plfa.Isomorphism.html#5550" class="Bound">A</a><a id="5580" class="Symbol">)</a>
+<a id="5582" href="/2019-08-31/Isomorphism/#5539" class="Function">from′</a> <a id="5588" class="Symbol">(</a><a id="5589" href="plfa.Isomorphism.html#5285" class="InductiveConstructor">mk-≃′</a> <a id="5595" href="plfa.Isomorphism.html#5595" class="Bound">f</a> <a id="5597" href="plfa.Isomorphism.html#5597" class="Bound">g</a> <a id="5599" href="plfa.Isomorphism.html#5599" class="Bound">g∘f</a> <a id="5603" href="plfa.Isomorphism.html#5603" class="Bound">f∘g</a><a id="5606" class="Symbol">)</a> <a id="5608" class="Symbol">=</a> <a id="5610" href="plfa.Isomorphism.html#5597" class="Bound">g</a>
+
+<a id="from∘to′"></a><a id="5613" href="/2019-08-31/Isomorphism/#5613" class="Function">from∘to′</a> <a id="5622" class="Symbol">:</a> <a id="5624" class="Symbol">∀</a> <a id="5626" class="Symbol">{</a><a id="5627" href="plfa.Isomorphism.html#5627" class="Bound">A</a> <a id="5629" href="plfa.Isomorphism.html#5629" class="Bound">B</a> <a id="5631" class="Symbol">:</a> <a id="5633" class="PrimitiveType">Set</a><a id="5636" class="Symbol">}</a> <a id="5638" class="Symbol">→</a> <a id="5640" class="Symbol">(</a><a id="5641" href="plfa.Isomorphism.html#5641" class="Bound">A≃B</a> <a id="5645" class="Symbol">:</a> <a id="5647" href="plfa.Isomorphism.html#5627" class="Bound">A</a> <a id="5649" href="plfa.Isomorphism.html#5255" class="Datatype Operator">≃′</a> <a id="5652" href="plfa.Isomorphism.html#5629" class="Bound">B</a><a id="5653" class="Symbol">)</a> <a id="5655" class="Symbol">→</a> <a id="5657" class="Symbol">(∀</a> <a id="5660" class="Symbol">(</a><a id="5661" href="plfa.Isomorphism.html#5661" class="Bound">x</a> <a id="5663" class="Symbol">:</a> <a id="5665" href="plfa.Isomorphism.html#5627" class="Bound">A</a><a id="5666" class="Symbol">)</a> <a id="5668" class="Symbol">→</a> <a id="5670" href="plfa.Isomorphism.html#5539" class="Function">from′</a> <a id="5676" href="plfa.Isomorphism.html#5641" class="Bound">A≃B</a> <a id="5680" class="Symbol">(</a><a id="5681" href="plfa.Isomorphism.html#5469" class="Function">to′</a> <a id="5685" href="plfa.Isomorphism.html#5641" class="Bound">A≃B</a> <a id="5689" href="plfa.Isomorphism.html#5661" class="Bound">x</a><a id="5690" class="Symbol">)</a> <a id="5692" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="5694" href="plfa.Isomorphism.html#5661" class="Bound">x</a><a id="5695" class="Symbol">)</a>
+<a id="5697" href="/2019-08-31/Isomorphism/#5613" class="Function">from∘to′</a> <a id="5706" class="Symbol">(</a><a id="5707" href="plfa.Isomorphism.html#5285" class="InductiveConstructor">mk-≃′</a> <a id="5713" href="plfa.Isomorphism.html#5713" class="Bound">f</a> <a id="5715" href="plfa.Isomorphism.html#5715" class="Bound">g</a> <a id="5717" href="plfa.Isomorphism.html#5717" class="Bound">g∘f</a> <a id="5721" href="plfa.Isomorphism.html#5721" class="Bound">f∘g</a><a id="5724" class="Symbol">)</a> <a id="5726" class="Symbol">=</a> <a id="5728" href="plfa.Isomorphism.html#5717" class="Bound">g∘f</a>
+
+<a id="to∘from′"></a><a id="5733" href="/2019-08-31/Isomorphism/#5733" class="Function">to∘from′</a> <a id="5742" class="Symbol">:</a> <a id="5744" class="Symbol">∀</a> <a id="5746" class="Symbol">{</a><a id="5747" href="plfa.Isomorphism.html#5747" class="Bound">A</a> <a id="5749" href="plfa.Isomorphism.html#5749" class="Bound">B</a> <a id="5751" class="Symbol">:</a> <a id="5753" class="PrimitiveType">Set</a><a id="5756" class="Symbol">}</a> <a id="5758" class="Symbol">→</a> <a id="5760" class="Symbol">(</a><a id="5761" href="plfa.Isomorphism.html#5761" class="Bound">A≃B</a> <a id="5765" class="Symbol">:</a> <a id="5767" href="plfa.Isomorphism.html#5747" class="Bound">A</a> <a id="5769" href="plfa.Isomorphism.html#5255" class="Datatype Operator">≃′</a> <a id="5772" href="plfa.Isomorphism.html#5749" class="Bound">B</a><a id="5773" class="Symbol">)</a> <a id="5775" class="Symbol">→</a> <a id="5777" class="Symbol">(∀</a> <a id="5780" class="Symbol">(</a><a id="5781" href="plfa.Isomorphism.html#5781" class="Bound">y</a> <a id="5783" class="Symbol">:</a> <a id="5785" href="plfa.Isomorphism.html#5749" class="Bound">B</a><a id="5786" class="Symbol">)</a> <a id="5788" class="Symbol">→</a> <a id="5790" href="plfa.Isomorphism.html#5469" class="Function">to′</a> <a id="5794" href="plfa.Isomorphism.html#5761" class="Bound">A≃B</a> <a id="5798" class="Symbol">(</a><a id="5799" href="plfa.Isomorphism.html#5539" class="Function">from′</a> <a id="5805" href="plfa.Isomorphism.html#5761" class="Bound">A≃B</a> <a id="5809" href="plfa.Isomorphism.html#5781" class="Bound">y</a><a id="5810" class="Symbol">)</a> <a id="5812" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="5814" href="plfa.Isomorphism.html#5781" class="Bound">y</a><a id="5815" class="Symbol">)</a>
+<a id="5817" href="/2019-08-31/Isomorphism/#5733" class="Function">to∘from′</a> <a id="5826" class="Symbol">(</a><a id="5827" href="plfa.Isomorphism.html#5285" class="InductiveConstructor">mk-≃′</a> <a id="5833" href="plfa.Isomorphism.html#5833" class="Bound">f</a> <a id="5835" href="plfa.Isomorphism.html#5835" class="Bound">g</a> <a id="5837" href="plfa.Isomorphism.html#5837" class="Bound">g∘f</a> <a id="5841" href="plfa.Isomorphism.html#5841" class="Bound">f∘g</a><a id="5844" class="Symbol">)</a> <a id="5846" class="Symbol">=</a> <a id="5848" href="plfa.Isomorphism.html#5841" class="Bound">f∘g</a>
+</pre>
+<p>We construct values of the record type with the syntax</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>record
+  { to    = f
+  ; from  = g
+  ; from∘to = g∘f
+  ; to∘from = f∘g
+  }
+</code></pre></div></div>
+
+<p>which corresponds to using the constructor of the corresponding
+inductive type</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mk-≃′ f g g∘f f∘g
+</code></pre></div></div>
+
+<p>where <code class="highlighter-rouge">f</code>, <code class="highlighter-rouge">g</code>, <code class="highlighter-rouge">g∘f</code>, and <code class="highlighter-rouge">f∘g</code> are values of suitable types.</p>
+
+<h2 id="isomorphism-is-an-equivalence">Isomorphism is an equivalence</h2>
+
+<p>Isomorphism is an equivalence, meaning that it is reflexive, symmetric,
+and transitive.  To show isomorphism is reflexive, we take both <code class="highlighter-rouge">to</code>
+and <code class="highlighter-rouge">from</code> to be the identity function:</p>
+<pre class="Agda"><a id="≃-refl"></a><a id="6400" href="/2019-08-31/Isomorphism/#6400" class="Function">≃-refl</a> <a id="6407" class="Symbol">:</a> <a id="6409" class="Symbol">∀</a> <a id="6411" class="Symbol">{</a><a id="6412" href="plfa.Isomorphism.html#6412" class="Bound">A</a> <a id="6414" class="Symbol">:</a> <a id="6416" class="PrimitiveType">Set</a><a id="6419" class="Symbol">}</a>
+    <a id="6425" class="Comment">-----</a>
+  <a id="6433" class="Symbol">→</a> <a id="6435" href="/2019-08-31/Isomorphism/#6412" class="Bound">A</a> <a id="6437" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="6439" href="plfa.Isomorphism.html#6412" class="Bound">A</a>
+<a id="6441" href="/2019-08-31/Isomorphism/#6400" class="Function">≃-refl</a> <a id="6448" class="Symbol">=</a>
+  <a id="6452" class="Keyword">record</a>
+    <a id="6463" class="Symbol">{</a> <a id="6465" href="/2019-08-31/Isomorphism/#4399" class="Field">to</a>      <a id="6473" class="Symbol">=</a> <a id="6475" class="Symbol">λ{</a><a id="6477" href="plfa.Isomorphism.html#6477" class="Bound">x</a> <a id="6479" class="Symbol">→</a> <a id="6481" href="plfa.Isomorphism.html#6477" class="Bound">x</a><a id="6482" class="Symbol">}</a>
+    <a id="6488" class="Symbol">;</a> <a id="6490" href="/2019-08-31/Isomorphism/#4416" class="Field">from</a>    <a id="6498" class="Symbol">=</a> <a id="6500" class="Symbol">λ{</a><a id="6502" href="plfa.Isomorphism.html#6502" class="Bound">y</a> <a id="6504" class="Symbol">→</a> <a id="6506" href="plfa.Isomorphism.html#6502" class="Bound">y</a><a id="6507" class="Symbol">}</a>
+    <a id="6513" class="Symbol">;</a> <a id="6515" href="/2019-08-31/Isomorphism/#4433" class="Field">from∘to</a> <a id="6523" class="Symbol">=</a> <a id="6525" class="Symbol">λ{</a><a id="6527" href="plfa.Isomorphism.html#6527" class="Bound">x</a> <a id="6529" class="Symbol">→</a> <a id="6531" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="6535" class="Symbol">}</a>
+    <a id="6541" class="Symbol">;</a> <a id="6543" href="/2019-08-31/Isomorphism/#4475" class="Field">to∘from</a> <a id="6551" class="Symbol">=</a> <a id="6553" class="Symbol">λ{</a><a id="6555" href="plfa.Isomorphism.html#6555" class="Bound">y</a> <a id="6557" class="Symbol">→</a> <a id="6559" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="6563" class="Symbol">}</a>
+    <a id="6569" class="Symbol">}</a>
+</pre>
+<p>In the above, <code class="highlighter-rouge">to</code> and <code class="highlighter-rouge">from</code> are both bound to identity functions,
+and <code class="highlighter-rouge">from∘to</code> and <code class="highlighter-rouge">to∘from</code> are both bound to functions that discard
+their argument and return <code class="highlighter-rouge">refl</code>.  In this case, <code class="highlighter-rouge">refl</code> alone is an
+adequate proof since for the left inverse, <code class="highlighter-rouge">from (to x)</code>
+simplifies to <code class="highlighter-rouge">x</code>, and similarly for the right inverse.</p>
+
+<p>To show isomorphism is symmetric, we simply swap the roles of <code class="highlighter-rouge">to</code>
+and <code class="highlighter-rouge">from</code>, and <code class="highlighter-rouge">from∘to</code> and <code class="highlighter-rouge">to∘from</code>:</p>
+<pre class="Agda"><a id="≃-sym"></a><a id="7006" href="/2019-08-31/Isomorphism/#7006" class="Function">≃-sym</a> <a id="7012" class="Symbol">:</a> <a id="7014" class="Symbol">∀</a> <a id="7016" class="Symbol">{</a><a id="7017" href="plfa.Isomorphism.html#7017" class="Bound">A</a> <a id="7019" href="plfa.Isomorphism.html#7019" class="Bound">B</a> <a id="7021" class="Symbol">:</a> <a id="7023" class="PrimitiveType">Set</a><a id="7026" class="Symbol">}</a>
+  <a id="7030" class="Symbol">→</a> <a id="7032" href="/2019-08-31/Isomorphism/#7017" class="Bound">A</a> <a id="7034" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="7036" href="plfa.Isomorphism.html#7019" class="Bound">B</a>
+    <a id="7042" class="Comment">-----</a>
+  <a id="7050" class="Symbol">→</a> <a id="7052" href="/2019-08-31/Isomorphism/#7019" class="Bound">B</a> <a id="7054" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="7056" href="plfa.Isomorphism.html#7017" class="Bound">A</a>
+<a id="7058" href="/2019-08-31/Isomorphism/#7006" class="Function">≃-sym</a> <a id="7064" href="plfa.Isomorphism.html#7064" class="Bound">A≃B</a> <a id="7068" class="Symbol">=</a>
+  <a id="7072" class="Keyword">record</a>
+    <a id="7083" class="Symbol">{</a> <a id="7085" href="/2019-08-31/Isomorphism/#4399" class="Field">to</a>      <a id="7093" class="Symbol">=</a> <a id="7095" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7100" href="plfa.Isomorphism.html#7064" class="Bound">A≃B</a>
+    <a id="7108" class="Symbol">;</a> <a id="7110" href="/2019-08-31/Isomorphism/#4416" class="Field">from</a>    <a id="7118" class="Symbol">=</a> <a id="7120" href="plfa.Isomorphism.html#4399" class="Field">to</a>   <a id="7125" href="plfa.Isomorphism.html#7064" class="Bound">A≃B</a>
+    <a id="7133" class="Symbol">;</a> <a id="7135" href="/2019-08-31/Isomorphism/#4433" class="Field">from∘to</a> <a id="7143" class="Symbol">=</a> <a id="7145" href="plfa.Isomorphism.html#4475" class="Field">to∘from</a> <a id="7153" href="plfa.Isomorphism.html#7064" class="Bound">A≃B</a>
+    <a id="7161" class="Symbol">;</a> <a id="7163" href="/2019-08-31/Isomorphism/#4475" class="Field">to∘from</a> <a id="7171" class="Symbol">=</a> <a id="7173" href="plfa.Isomorphism.html#4433" class="Field">from∘to</a> <a id="7181" href="plfa.Isomorphism.html#7064" class="Bound">A≃B</a>
+    <a id="7189" class="Symbol">}</a>
+</pre>
+<p>To show isomorphism is transitive, we compose the <code class="highlighter-rouge">to</code> and <code class="highlighter-rouge">from</code>
+functions, and use equational reasoning to combine the inverses:</p>
+<pre class="Agda"><a id="≃-trans"></a><a id="7331" href="/2019-08-31/Isomorphism/#7331" class="Function">≃-trans</a> <a id="7339" class="Symbol">:</a> <a id="7341" class="Symbol">∀</a> <a id="7343" class="Symbol">{</a><a id="7344" href="plfa.Isomorphism.html#7344" class="Bound">A</a> <a id="7346" href="plfa.Isomorphism.html#7346" class="Bound">B</a> <a id="7348" href="plfa.Isomorphism.html#7348" class="Bound">C</a> <a id="7350" class="Symbol">:</a> <a id="7352" class="PrimitiveType">Set</a><a id="7355" class="Symbol">}</a>
+  <a id="7359" class="Symbol">→</a> <a id="7361" href="/2019-08-31/Isomorphism/#7344" class="Bound">A</a> <a id="7363" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="7365" href="plfa.Isomorphism.html#7346" class="Bound">B</a>
+  <a id="7369" class="Symbol">→</a> <a id="7371" href="/2019-08-31/Isomorphism/#7346" class="Bound">B</a> <a id="7373" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="7375" href="plfa.Isomorphism.html#7348" class="Bound">C</a>
+    <a id="7381" class="Comment">-----</a>
+  <a id="7389" class="Symbol">→</a> <a id="7391" href="/2019-08-31/Isomorphism/#7344" class="Bound">A</a> <a id="7393" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="7395" href="plfa.Isomorphism.html#7348" class="Bound">C</a>
+<a id="7397" href="/2019-08-31/Isomorphism/#7331" class="Function">≃-trans</a> <a id="7405" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7409" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7413" class="Symbol">=</a>
+  <a id="7417" class="Keyword">record</a>
+    <a id="7428" class="Symbol">{</a> <a id="7430" href="/2019-08-31/Isomorphism/#4399" class="Field">to</a>       <a id="7439" class="Symbol">=</a> <a id="7441" href="plfa.Isomorphism.html#4399" class="Field">to</a>   <a id="7446" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7450" href="plfa.Isomorphism.html#1946" class="Function Operator">∘</a> <a id="7452" href="plfa.Isomorphism.html#4399" class="Field">to</a>   <a id="7457" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a>
+    <a id="7465" class="Symbol">;</a> <a id="7467" href="/2019-08-31/Isomorphism/#4416" class="Field">from</a>     <a id="7476" class="Symbol">=</a> <a id="7478" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7483" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7487" href="plfa.Isomorphism.html#1946" class="Function Operator">∘</a> <a id="7489" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7494" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a>
+    <a id="7502" class="Symbol">;</a> <a id="7504" href="/2019-08-31/Isomorphism/#4433" class="Field">from∘to</a>  <a id="7513" class="Symbol">=</a> <a id="7515" class="Symbol">λ{</a><a id="7517" href="plfa.Isomorphism.html#7517" class="Bound">x</a> <a id="7519" class="Symbol">→</a>
+        <a id="7529" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2597" class="Function Operator">begin</a>
+          <a id="7545" class="Symbol">(</a><a id="7546" href="/2019-08-31/Isomorphism/#4416" class="Field">from</a> <a id="7551" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7555" href="plfa.Isomorphism.html#1946" class="Function Operator">∘</a> <a id="7557" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7562" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a><a id="7565" class="Symbol">)</a> <a id="7567" class="Symbol">((</a><a id="7569" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="7572" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7576" href="plfa.Isomorphism.html#1946" class="Function Operator">∘</a> <a id="7578" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="7581" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a><a id="7584" class="Symbol">)</a> <a id="7586" href="plfa.Isomorphism.html#7517" class="Bound">x</a><a id="7587" class="Symbol">)</a>
+        <a id="7597" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2655" class="Function Operator">≡⟨⟩</a>
+          <a id="7611" href="/2019-08-31/Isomorphism/#4416" class="Field">from</a> <a id="7616" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7620" class="Symbol">(</a><a id="7621" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7626" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7630" class="Symbol">(</a><a id="7631" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="7634" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7638" class="Symbol">(</a><a id="7639" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="7642" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7646" href="plfa.Isomorphism.html#7517" class="Bound">x</a><a id="7647" class="Symbol">)))</a>
+        <a id="7659" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">≡⟨</a> <a id="7662" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#1090" class="Function">cong</a> <a id="7667" class="Symbol">(</a><a id="7668" href="/2019-08-31/Isomorphism/#4416" class="Field">from</a> <a id="7673" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a><a id="7676" class="Symbol">)</a> <a id="7678" class="Symbol">(</a><a id="7679" href="plfa.Isomorphism.html#4433" class="Field">from∘to</a> <a id="7687" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7691" class="Symbol">(</a><a id="7692" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="7695" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7699" href="plfa.Isomorphism.html#7517" class="Bound">x</a><a id="7700" class="Symbol">))</a> <a id="7703" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">⟩</a>
+          <a id="7715" href="/2019-08-31/Isomorphism/#4416" class="Field">from</a> <a id="7720" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7724" class="Symbol">(</a><a id="7725" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="7728" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7732" href="plfa.Isomorphism.html#7517" class="Bound">x</a><a id="7733" class="Symbol">)</a>
+        <a id="7743" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">≡⟨</a> <a id="7746" href="/2019-08-31/Isomorphism/#4433" class="Field">from∘to</a> <a id="7754" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7758" href="plfa.Isomorphism.html#7517" class="Bound">x</a> <a id="7760" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">⟩</a>
+          <a id="7772" href="/2019-08-31/Isomorphism/#7517" class="Bound">x</a>
+        <a id="7782" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2892" class="Function Operator">∎</a><a id="7783" class="Symbol">}</a>
+    <a id="7789" class="Symbol">;</a> <a id="7791" href="/2019-08-31/Isomorphism/#4475" class="Field">to∘from</a> <a id="7799" class="Symbol">=</a> <a id="7801" class="Symbol">λ{</a><a id="7803" href="plfa.Isomorphism.html#7803" class="Bound">y</a> <a id="7805" class="Symbol">→</a>
+        <a id="7815" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2597" class="Function Operator">begin</a>
+          <a id="7831" class="Symbol">(</a><a id="7832" href="/2019-08-31/Isomorphism/#4399" class="Field">to</a> <a id="7835" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7839" href="plfa.Isomorphism.html#1946" class="Function Operator">∘</a> <a id="7841" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="7844" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a><a id="7847" class="Symbol">)</a> <a id="7849" class="Symbol">((</a><a id="7851" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7856" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7860" href="plfa.Isomorphism.html#1946" class="Function Operator">∘</a> <a id="7862" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7867" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a><a id="7870" class="Symbol">)</a> <a id="7872" href="plfa.Isomorphism.html#7803" class="Bound">y</a><a id="7873" class="Symbol">)</a>
+        <a id="7883" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2655" class="Function Operator">≡⟨⟩</a>
+          <a id="7897" href="/2019-08-31/Isomorphism/#4399" class="Field">to</a> <a id="7900" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7904" class="Symbol">(</a><a id="7905" href="plfa.Isomorphism.html#4399" class="Field">to</a> <a id="7908" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7912" class="Symbol">(</a><a id="7913" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7918" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7922" class="Symbol">(</a><a id="7923" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7928" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7932" href="plfa.Isomorphism.html#7803" class="Bound">y</a><a id="7933" class="Symbol">)))</a>
+        <a id="7945" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">≡⟨</a> <a id="7948" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#1090" class="Function">cong</a> <a id="7953" class="Symbol">(</a><a id="7954" href="/2019-08-31/Isomorphism/#4399" class="Field">to</a> <a id="7957" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a><a id="7960" class="Symbol">)</a> <a id="7962" class="Symbol">(</a><a id="7963" href="plfa.Isomorphism.html#4475" class="Field">to∘from</a> <a id="7971" href="plfa.Isomorphism.html#7405" class="Bound">A≃B</a> <a id="7975" class="Symbol">(</a><a id="7976" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="7981" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="7985" href="plfa.Isomorphism.html#7803" class="Bound">y</a><a id="7986" class="Symbol">))</a> <a id="7989" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">⟩</a>
+          <a id="8001" href="/2019-08-31/Isomorphism/#4399" class="Field">to</a> <a id="8004" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="8008" class="Symbol">(</a><a id="8009" href="plfa.Isomorphism.html#4416" class="Field">from</a> <a id="8014" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="8018" href="plfa.Isomorphism.html#7803" class="Bound">y</a><a id="8019" class="Symbol">)</a>
+        <a id="8029" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">≡⟨</a> <a id="8032" href="/2019-08-31/Isomorphism/#4475" class="Field">to∘from</a> <a id="8040" href="plfa.Isomorphism.html#7409" class="Bound">B≃C</a> <a id="8044" href="plfa.Isomorphism.html#7803" class="Bound">y</a> <a id="8046" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">⟩</a>
+          <a id="8058" href="/2019-08-31/Isomorphism/#7803" class="Bound">y</a>
+        <a id="8068" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2892" class="Function Operator">∎</a><a id="8069" class="Symbol">}</a>
+     <a id="8076" class="Symbol">}</a>
+</pre>
+
+<h2 id="equational-reasoning-for-isomorphism">Equational reasoning for isomorphism</h2>
+
+<p>It is straightforward to support a variant of equational reasoning for
+isomorphism.  We essentially copy the previous definition
+of equality for isomorphism.  We omit the form that corresponds to <code class="highlighter-rouge">_≡⟨⟩_</code>, since
+trivial isomorphisms arise far less often than trivial equalities:</p>
+
+<pre class="Agda"><a id="8408" class="Keyword">module</a> <a id="≃-Reasoning"></a><a id="8415" href="/2019-08-31/Isomorphism/#8415" class="Module">≃-Reasoning</a> <a id="8427" class="Keyword">where</a>
+
+  <a id="8436" class="Keyword">infix</a>  <a id="8443" class="Number">1</a> <a id="8445" href="/2019-08-31/Isomorphism/#8491" class="Function Operator">≃-begin_</a>
+  <a id="8456" class="Keyword">infixr</a> <a id="8463" class="Number">2</a> <a id="8465" href="/2019-08-31/Isomorphism/#8575" class="Function Operator">_≃⟨_⟩_</a>
+  <a id="8474" class="Keyword">infix</a>  <a id="8481" class="Number">3</a> <a id="8483" href="/2019-08-31/Isomorphism/#8694" class="Function Operator">_≃-∎</a>
+
+  <a id="≃-Reasoning.≃-begin_"></a><a id="8491" href="/2019-08-31/Isomorphism/#8491" class="Function Operator">≃-begin_</a> <a id="8500" class="Symbol">:</a> <a id="8502" class="Symbol">∀</a> <a id="8504" class="Symbol">{</a><a id="8505" href="plfa.Isomorphism.html#8505" class="Bound">A</a> <a id="8507" href="plfa.Isomorphism.html#8507" class="Bound">B</a> <a id="8509" class="Symbol">:</a> <a id="8511" class="PrimitiveType">Set</a><a id="8514" class="Symbol">}</a>
+    <a id="8520" class="Symbol">→</a> <a id="8522" href="/2019-08-31/Isomorphism/#8505" class="Bound">A</a> <a id="8524" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="8526" href="plfa.Isomorphism.html#8507" class="Bound">B</a>
+      <a id="8534" class="Comment">-----</a>
+    <a id="8544" class="Symbol">→</a> <a id="8546" href="/2019-08-31/Isomorphism/#8505" class="Bound">A</a> <a id="8548" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="8550" href="plfa.Isomorphism.html#8507" class="Bound">B</a>
+  <a id="8554" href="/2019-08-31/Isomorphism/#8491" class="Function Operator">≃-begin</a> <a id="8562" href="plfa.Isomorphism.html#8562" class="Bound">A≃B</a> <a id="8566" class="Symbol">=</a> <a id="8568" href="plfa.Isomorphism.html#8562" class="Bound">A≃B</a>
+
+  <a id="≃-Reasoning._≃⟨_⟩_"></a><a id="8575" href="/2019-08-31/Isomorphism/#8575" class="Function Operator">_≃⟨_⟩_</a> <a id="8582" class="Symbol">:</a> <a id="8584" class="Symbol">∀</a> <a id="8586" class="Symbol">(</a><a id="8587" href="plfa.Isomorphism.html#8587" class="Bound">A</a> <a id="8589" class="Symbol">:</a> <a id="8591" class="PrimitiveType">Set</a><a id="8594" class="Symbol">)</a> <a id="8596" class="Symbol">{</a><a id="8597" href="plfa.Isomorphism.html#8597" class="Bound">B</a> <a id="8599" href="plfa.Isomorphism.html#8599" class="Bound">C</a> <a id="8601" class="Symbol">:</a> <a id="8603" class="PrimitiveType">Set</a><a id="8606" class="Symbol">}</a>
+    <a id="8612" class="Symbol">→</a> <a id="8614" href="/2019-08-31/Isomorphism/#8587" class="Bound">A</a> <a id="8616" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="8618" href="plfa.Isomorphism.html#8597" class="Bound">B</a>
+    <a id="8624" class="Symbol">→</a> <a id="8626" href="/2019-08-31/Isomorphism/#8597" class="Bound">B</a> <a id="8628" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="8630" href="plfa.Isomorphism.html#8599" class="Bound">C</a>
+      <a id="8638" class="Comment">-----</a>
+    <a id="8648" class="Symbol">→</a> <a id="8650" href="/2019-08-31/Isomorphism/#8587" class="Bound">A</a> <a id="8652" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="8654" href="plfa.Isomorphism.html#8599" class="Bound">C</a>
+  <a id="8658" href="/2019-08-31/Isomorphism/#8658" class="Bound">A</a> <a id="8660" href="plfa.Isomorphism.html#8575" class="Function Operator">≃⟨</a> <a id="8663" href="plfa.Isomorphism.html#8663" class="Bound">A≃B</a> <a id="8667" href="plfa.Isomorphism.html#8575" class="Function Operator">⟩</a> <a id="8669" href="plfa.Isomorphism.html#8669" class="Bound">B≃C</a> <a id="8673" class="Symbol">=</a> <a id="8675" href="plfa.Isomorphism.html#7331" class="Function">≃-trans</a> <a id="8683" href="plfa.Isomorphism.html#8663" class="Bound">A≃B</a> <a id="8687" href="plfa.Isomorphism.html#8669" class="Bound">B≃C</a>
+
+  <a id="≃-Reasoning._≃-∎"></a><a id="8694" href="/2019-08-31/Isomorphism/#8694" class="Function Operator">_≃-∎</a> <a id="8699" class="Symbol">:</a> <a id="8701" class="Symbol">∀</a> <a id="8703" class="Symbol">(</a><a id="8704" href="plfa.Isomorphism.html#8704" class="Bound">A</a> <a id="8706" class="Symbol">:</a> <a id="8708" class="PrimitiveType">Set</a><a id="8711" class="Symbol">)</a>
+      <a id="8719" class="Comment">-----</a>
+    <a id="8729" class="Symbol">→</a> <a id="8731" href="/2019-08-31/Isomorphism/#8704" class="Bound">A</a> <a id="8733" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="8735" href="plfa.Isomorphism.html#8704" class="Bound">A</a>
+  <a id="8739" href="/2019-08-31/Isomorphism/#8739" class="Bound">A</a> <a id="8741" href="plfa.Isomorphism.html#8694" class="Function Operator">≃-∎</a> <a id="8745" class="Symbol">=</a> <a id="8747" href="plfa.Isomorphism.html#6400" class="Function">≃-refl</a>
+
+<a id="8755" class="Keyword">open</a> <a id="8760" href="/2019-08-31/Isomorphism/#8415" class="Module">≃-Reasoning</a>
+</pre>
+
+<h2 id="embedding">Embedding</h2>
+
+<p>We also need the notion of <em>embedding</em>, which is a weakening of
+isomorphism.  While an isomorphism shows that two types are in
+one-to-one correspondence, an embedding shows that the first type is
+included in the second; or, equivalently, that there is a many-to-one
+correspondence between the second type and the first.</p>
+
+<p>Here is the formal definition of embedding:</p>
+<pre class="Agda"><a id="9161" class="Keyword">infix</a> <a id="9167" class="Number">0</a> <a id="9169" href="/2019-08-31/Isomorphism/#9180" class="Record Operator">_≲_</a>
+<a id="9173" class="Keyword">record</a> <a id="_≲_"></a><a id="9180" href="/2019-08-31/Isomorphism/#9180" class="Record Operator">_≲_</a> <a id="9184" class="Symbol">(</a><a id="9185" href="plfa.Isomorphism.html#9185" class="Bound">A</a> <a id="9187" href="plfa.Isomorphism.html#9187" class="Bound">B</a> <a id="9189" class="Symbol">:</a> <a id="9191" class="PrimitiveType">Set</a><a id="9194" class="Symbol">)</a> <a id="9196" class="Symbol">:</a> <a id="9198" class="PrimitiveType">Set</a> <a id="9202" class="Keyword">where</a>
+  <a id="9210" class="Keyword">field</a>
+    <a id="_≲_.to"></a><a id="9220" href="/2019-08-31/Isomorphism/#9220" class="Field">to</a>      <a id="9228" class="Symbol">:</a> <a id="9230" href="plfa.Isomorphism.html#9185" class="Bound">A</a> <a id="9232" class="Symbol">→</a> <a id="9234" href="plfa.Isomorphism.html#9187" class="Bound">B</a>
+    <a id="_≲_.from"></a><a id="9240" href="/2019-08-31/Isomorphism/#9240" class="Field">from</a>    <a id="9248" class="Symbol">:</a> <a id="9250" href="plfa.Isomorphism.html#9187" class="Bound">B</a> <a id="9252" class="Symbol">→</a> <a id="9254" href="plfa.Isomorphism.html#9185" class="Bound">A</a>
+    <a id="_≲_.from∘to"></a><a id="9260" href="/2019-08-31/Isomorphism/#9260" class="Field">from∘to</a> <a id="9268" class="Symbol">:</a> <a id="9270" class="Symbol">∀</a> <a id="9272" class="Symbol">(</a><a id="9273" href="plfa.Isomorphism.html#9273" class="Bound">x</a> <a id="9275" class="Symbol">:</a> <a id="9277" href="plfa.Isomorphism.html#9185" class="Bound">A</a><a id="9278" class="Symbol">)</a> <a id="9280" class="Symbol">→</a> <a id="9282" class="Field">from</a> <a id="9287" class="Symbol">(</a><a id="9288" class="Field">to</a> <a id="9291" href="plfa.Isomorphism.html#9273" class="Bound">x</a><a id="9292" class="Symbol">)</a> <a id="9294" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="9296" href="plfa.Isomorphism.html#9273" class="Bound">x</a>
+<a id="9298" class="Keyword">open</a> <a id="9303" href="/2019-08-31/Isomorphism/#9180" class="Module Operator">_≲_</a>
+</pre>
+<p>It is the same as an isomorphism, save that it lacks the <code class="highlighter-rouge">to∘from</code> field.
+Hence, we know that <code class="highlighter-rouge">from</code> is left-inverse to <code class="highlighter-rouge">to</code>, but not that <code class="highlighter-rouge">from</code>
+is right-inverse to <code class="highlighter-rouge">to</code>.</p>
+
+<p>Embedding is reflexive and transitive, but not symmetric.  The proofs
+are cut down versions of the similar proofs for isomorphism:</p>
+<pre class="Agda"><a id="≲-refl"></a><a id="9619" href="/2019-08-31/Isomorphism/#9619" class="Function">≲-refl</a> <a id="9626" class="Symbol">:</a> <a id="9628" class="Symbol">∀</a> <a id="9630" class="Symbol">{</a><a id="9631" href="plfa.Isomorphism.html#9631" class="Bound">A</a> <a id="9633" class="Symbol">:</a> <a id="9635" class="PrimitiveType">Set</a><a id="9638" class="Symbol">}</a> <a id="9640" class="Symbol">→</a> <a id="9642" href="plfa.Isomorphism.html#9631" class="Bound">A</a> <a id="9644" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="9646" href="plfa.Isomorphism.html#9631" class="Bound">A</a>
+<a id="9648" href="/2019-08-31/Isomorphism/#9619" class="Function">≲-refl</a> <a id="9655" class="Symbol">=</a>
+  <a id="9659" class="Keyword">record</a>
+    <a id="9670" class="Symbol">{</a> <a id="9672" href="/2019-08-31/Isomorphism/#9220" class="Field">to</a>      <a id="9680" class="Symbol">=</a> <a id="9682" class="Symbol">λ{</a><a id="9684" href="plfa.Isomorphism.html#9684" class="Bound">x</a> <a id="9686" class="Symbol">→</a> <a id="9688" href="plfa.Isomorphism.html#9684" class="Bound">x</a><a id="9689" class="Symbol">}</a>
+    <a id="9695" class="Symbol">;</a> <a id="9697" href="/2019-08-31/Isomorphism/#9240" class="Field">from</a>    <a id="9705" class="Symbol">=</a> <a id="9707" class="Symbol">λ{</a><a id="9709" href="plfa.Isomorphism.html#9709" class="Bound">y</a> <a id="9711" class="Symbol">→</a> <a id="9713" href="plfa.Isomorphism.html#9709" class="Bound">y</a><a id="9714" class="Symbol">}</a>
+    <a id="9720" class="Symbol">;</a> <a id="9722" href="/2019-08-31/Isomorphism/#9260" class="Field">from∘to</a> <a id="9730" class="Symbol">=</a> <a id="9732" class="Symbol">λ{</a><a id="9734" href="plfa.Isomorphism.html#9734" class="Bound">x</a> <a id="9736" class="Symbol">→</a> <a id="9738" href="Agda.Builtin.Equality.html#182" class="InductiveConstructor">refl</a><a id="9742" class="Symbol">}</a>
+    <a id="9748" class="Symbol">}</a>
+
+<a id="≲-trans"></a><a id="9751" href="/2019-08-31/Isomorphism/#9751" class="Function">≲-trans</a> <a id="9759" class="Symbol">:</a> <a id="9761" class="Symbol">∀</a> <a id="9763" class="Symbol">{</a><a id="9764" href="plfa.Isomorphism.html#9764" class="Bound">A</a> <a id="9766" href="plfa.Isomorphism.html#9766" class="Bound">B</a> <a id="9768" href="plfa.Isomorphism.html#9768" class="Bound">C</a> <a id="9770" class="Symbol">:</a> <a id="9772" class="PrimitiveType">Set</a><a id="9775" class="Symbol">}</a> <a id="9777" class="Symbol">→</a> <a id="9779" href="plfa.Isomorphism.html#9764" class="Bound">A</a> <a id="9781" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="9783" href="plfa.Isomorphism.html#9766" class="Bound">B</a> <a id="9785" class="Symbol">→</a> <a id="9787" href="plfa.Isomorphism.html#9766" class="Bound">B</a> <a id="9789" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="9791" href="plfa.Isomorphism.html#9768" class="Bound">C</a> <a id="9793" class="Symbol">→</a> <a id="9795" href="plfa.Isomorphism.html#9764" class="Bound">A</a> <a id="9797" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="9799" href="plfa.Isomorphism.html#9768" class="Bound">C</a>
+<a id="9801" href="/2019-08-31/Isomorphism/#9751" class="Function">≲-trans</a> <a id="9809" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a> <a id="9813" href="plfa.Isomorphism.html#9813" class="Bound">B≲C</a> <a id="9817" class="Symbol">=</a>
+  <a id="9821" class="Keyword">record</a>
+    <a id="9832" class="Symbol">{</a> <a id="9834" href="/2019-08-31/Isomorphism/#9220" class="Field">to</a>      <a id="9842" class="Symbol">=</a> <a id="9844" class="Symbol">λ{</a><a id="9846" href="plfa.Isomorphism.html#9846" class="Bound">x</a> <a id="9848" class="Symbol">→</a> <a id="9850" href="plfa.Isomorphism.html#9220" class="Field">to</a>   <a id="9855" href="plfa.Isomorphism.html#9813" class="Bound">B≲C</a> <a id="9859" class="Symbol">(</a><a id="9860" href="plfa.Isomorphism.html#9220" class="Field">to</a>   <a id="9865" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a> <a id="9869" href="plfa.Isomorphism.html#9846" class="Bound">x</a><a id="9870" class="Symbol">)}</a>
+    <a id="9877" class="Symbol">;</a> <a id="9879" href="/2019-08-31/Isomorphism/#9240" class="Field">from</a>    <a id="9887" class="Symbol">=</a> <a id="9889" class="Symbol">λ{</a><a id="9891" href="plfa.Isomorphism.html#9891" class="Bound">y</a> <a id="9893" class="Symbol">→</a> <a id="9895" href="plfa.Isomorphism.html#9240" class="Field">from</a> <a id="9900" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a> <a id="9904" class="Symbol">(</a><a id="9905" href="plfa.Isomorphism.html#9240" class="Field">from</a> <a id="9910" href="plfa.Isomorphism.html#9813" class="Bound">B≲C</a> <a id="9914" href="plfa.Isomorphism.html#9891" class="Bound">y</a><a id="9915" class="Symbol">)}</a>
+    <a id="9922" class="Symbol">;</a> <a id="9924" href="/2019-08-31/Isomorphism/#9260" class="Field">from∘to</a> <a id="9932" class="Symbol">=</a> <a id="9934" class="Symbol">λ{</a><a id="9936" href="plfa.Isomorphism.html#9936" class="Bound">x</a> <a id="9938" class="Symbol">→</a>
+        <a id="9948" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2597" class="Function Operator">begin</a>
+          <a id="9964" href="/2019-08-31/Isomorphism/#9240" class="Field">from</a> <a id="9969" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a> <a id="9973" class="Symbol">(</a><a id="9974" href="plfa.Isomorphism.html#9240" class="Field">from</a> <a id="9979" href="plfa.Isomorphism.html#9813" class="Bound">B≲C</a> <a id="9983" class="Symbol">(</a><a id="9984" href="plfa.Isomorphism.html#9220" class="Field">to</a> <a id="9987" href="plfa.Isomorphism.html#9813" class="Bound">B≲C</a> <a id="9991" class="Symbol">(</a><a id="9992" href="plfa.Isomorphism.html#9220" class="Field">to</a> <a id="9995" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a> <a id="9999" href="plfa.Isomorphism.html#9936" class="Bound">x</a><a id="10000" class="Symbol">)))</a>
+        <a id="10012" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">≡⟨</a> <a id="10015" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#1090" class="Function">cong</a> <a id="10020" class="Symbol">(</a><a id="10021" href="/2019-08-31/Isomorphism/#9240" class="Field">from</a> <a id="10026" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a><a id="10029" class="Symbol">)</a> <a id="10031" class="Symbol">(</a><a id="10032" href="plfa.Isomorphism.html#9260" class="Field">from∘to</a> <a id="10040" href="plfa.Isomorphism.html#9813" class="Bound">B≲C</a> <a id="10044" class="Symbol">(</a><a id="10045" href="plfa.Isomorphism.html#9220" class="Field">to</a> <a id="10048" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a> <a id="10052" href="plfa.Isomorphism.html#9936" class="Bound">x</a><a id="10053" class="Symbol">))</a> <a id="10056" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">⟩</a>
+          <a id="10068" href="/2019-08-31/Isomorphism/#9240" class="Field">from</a> <a id="10073" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a> <a id="10077" class="Symbol">(</a><a id="10078" href="plfa.Isomorphism.html#9220" class="Field">to</a> <a id="10081" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a> <a id="10085" href="plfa.Isomorphism.html#9936" class="Bound">x</a><a id="10086" class="Symbol">)</a>
+        <a id="10096" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">≡⟨</a> <a id="10099" href="/2019-08-31/Isomorphism/#9260" class="Field">from∘to</a> <a id="10107" href="plfa.Isomorphism.html#9809" class="Bound">A≲B</a> <a id="10111" href="plfa.Isomorphism.html#9936" class="Bound">x</a> <a id="10113" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">⟩</a>
+          <a id="10125" href="/2019-08-31/Isomorphism/#9936" class="Bound">x</a>
+        <a id="10135" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2892" class="Function Operator">∎</a><a id="10136" class="Symbol">}</a>
+     <a id="10143" class="Symbol">}</a>
+</pre>
+<p>It is also easy to see that if two types embed in each other, and the
+embedding functions correspond, then they are isomorphic.  This is a
+weak form of anti-symmetry:</p>
+<pre class="Agda"><a id="≲-antisym"></a><a id="10321" href="/2019-08-31/Isomorphism/#10321" class="Function">≲-antisym</a> <a id="10331" class="Symbol">:</a> <a id="10333" class="Symbol">∀</a> <a id="10335" class="Symbol">{</a><a id="10336" href="plfa.Isomorphism.html#10336" class="Bound">A</a> <a id="10338" href="plfa.Isomorphism.html#10338" class="Bound">B</a> <a id="10340" class="Symbol">:</a> <a id="10342" class="PrimitiveType">Set</a><a id="10345" class="Symbol">}</a>
+  <a id="10349" class="Symbol">→</a> <a id="10351" class="Symbol">(</a><a id="10352" href="/2019-08-31/Isomorphism/#10352" class="Bound">A≲B</a> <a id="10356" class="Symbol">:</a> <a id="10358" href="plfa.Isomorphism.html#10336" class="Bound">A</a> <a id="10360" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="10362" href="plfa.Isomorphism.html#10338" class="Bound">B</a><a id="10363" class="Symbol">)</a>
+  <a id="10367" class="Symbol">→</a> <a id="10369" class="Symbol">(</a><a id="10370" href="/2019-08-31/Isomorphism/#10370" class="Bound">B≲A</a> <a id="10374" class="Symbol">:</a> <a id="10376" href="plfa.Isomorphism.html#10338" class="Bound">B</a> <a id="10378" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="10380" href="plfa.Isomorphism.html#10336" class="Bound">A</a><a id="10381" class="Symbol">)</a>
+  <a id="10385" class="Symbol">→</a> <a id="10387" class="Symbol">(</a><a id="10388" href="/2019-08-31/Isomorphism/#9220" class="Field">to</a> <a id="10391" href="plfa.Isomorphism.html#10352" class="Bound">A≲B</a> <a id="10395" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="10397" href="plfa.Isomorphism.html#9240" class="Field">from</a> <a id="10402" href="plfa.Isomorphism.html#10370" class="Bound">B≲A</a><a id="10405" class="Symbol">)</a>
+  <a id="10409" class="Symbol">→</a> <a id="10411" class="Symbol">(</a><a id="10412" href="/2019-08-31/Isomorphism/#9240" class="Field">from</a> <a id="10417" href="plfa.Isomorphism.html#10352" class="Bound">A≲B</a> <a id="10421" href="Agda.Builtin.Equality.html#125" class="Datatype Operator">≡</a> <a id="10423" href="plfa.Isomorphism.html#9220" class="Field">to</a> <a id="10426" href="plfa.Isomorphism.html#10370" class="Bound">B≲A</a><a id="10429" class="Symbol">)</a>
+    <a id="10435" class="Comment">-------------------</a>
+  <a id="10457" class="Symbol">→</a> <a id="10459" href="/2019-08-31/Isomorphism/#10336" class="Bound">A</a> <a id="10461" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="10463" href="plfa.Isomorphism.html#10338" class="Bound">B</a>
+<a id="10465" href="/2019-08-31/Isomorphism/#10321" class="Function">≲-antisym</a> <a id="10475" href="plfa.Isomorphism.html#10475" class="Bound">A≲B</a> <a id="10479" href="plfa.Isomorphism.html#10479" class="Bound">B≲A</a> <a id="10483" href="plfa.Isomorphism.html#10483" class="Bound">to≡from</a> <a id="10491" href="plfa.Isomorphism.html#10491" class="Bound">from≡to</a> <a id="10499" class="Symbol">=</a>
+  <a id="10503" class="Keyword">record</a>
+    <a id="10514" class="Symbol">{</a> <a id="10516" href="/2019-08-31/Isomorphism/#4399" class="Field">to</a>      <a id="10524" class="Symbol">=</a> <a id="10526" href="plfa.Isomorphism.html#9220" class="Field">to</a> <a id="10529" href="plfa.Isomorphism.html#10475" class="Bound">A≲B</a>
+    <a id="10537" class="Symbol">;</a> <a id="10539" href="/2019-08-31/Isomorphism/#4416" class="Field">from</a>    <a id="10547" class="Symbol">=</a> <a id="10549" href="plfa.Isomorphism.html#9240" class="Field">from</a> <a id="10554" href="plfa.Isomorphism.html#10475" class="Bound">A≲B</a>
+    <a id="10562" class="Symbol">;</a> <a id="10564" href="/2019-08-31/Isomorphism/#4433" class="Field">from∘to</a> <a id="10572" class="Symbol">=</a> <a id="10574" href="plfa.Isomorphism.html#9260" class="Field">from∘to</a> <a id="10582" href="plfa.Isomorphism.html#10475" class="Bound">A≲B</a>
+    <a id="10590" class="Symbol">;</a> <a id="10592" href="/2019-08-31/Isomorphism/#4475" class="Field">to∘from</a> <a id="10600" class="Symbol">=</a> <a id="10602" class="Symbol">λ{</a><a id="10604" href="plfa.Isomorphism.html#10604" class="Bound">y</a> <a id="10606" class="Symbol">→</a>
+        <a id="10616" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2597" class="Function Operator">begin</a>
+          <a id="10632" href="/2019-08-31/Isomorphism/#9220" class="Field">to</a> <a id="10635" href="plfa.Isomorphism.html#10475" class="Bound">A≲B</a> <a id="10639" class="Symbol">(</a><a id="10640" href="plfa.Isomorphism.html#9240" class="Field">from</a> <a id="10645" href="plfa.Isomorphism.html#10475" class="Bound">A≲B</a> <a id="10649" href="plfa.Isomorphism.html#10604" class="Bound">y</a><a id="10650" class="Symbol">)</a>
+        <a id="10660" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">≡⟨</a> <a id="10663" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#1090" class="Function">cong</a> <a id="10668" class="Symbol">(</a><a id="10669" href="/2019-08-31/Isomorphism/#9220" class="Field">to</a> <a id="10672" href="plfa.Isomorphism.html#10475" class="Bound">A≲B</a><a id="10675" class="Symbol">)</a> <a id="10677" class="Symbol">(</a><a id="10678" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html#1308" class="Function">cong-app</a> <a id="10687" href="plfa.Isomorphism.html#10491" class="Bound">from≡to</a> <a id="10695" href="plfa.Isomorphism.html#10604" class="Bound">y</a><a id="10696" class="Symbol">)</a> <a id="10698" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">⟩</a>
+          <a id="10710" href="/2019-08-31/Isomorphism/#9220" class="Field">to</a> <a id="10713" href="plfa.Isomorphism.html#10475" class="Bound">A≲B</a> <a id="10717" class="Symbol">(</a><a id="10718" href="plfa.Isomorphism.html#9220" class="Field">to</a> <a id="10721" href="plfa.Isomorphism.html#10479" class="Bound">B≲A</a> <a id="10725" href="plfa.Isomorphism.html#10604" class="Bound">y</a><a id="10726" class="Symbol">)</a>
+        <a id="10736" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">≡⟨</a> <a id="10739" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.html#1308" class="Function">cong-app</a> <a id="10748" href="/2019-08-31/Isomorphism/#10483" class="Bound">to≡from</a> <a id="10756" class="Symbol">(</a><a id="10757" href="plfa.Isomorphism.html#9220" class="Field">to</a> <a id="10760" href="plfa.Isomorphism.html#10479" class="Bound">B≲A</a> <a id="10764" href="plfa.Isomorphism.html#10604" class="Bound">y</a><a id="10765" class="Symbol">)</a> <a id="10767" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">⟩</a>
+          <a id="10779" href="/2019-08-31/Isomorphism/#9240" class="Field">from</a> <a id="10784" href="plfa.Isomorphism.html#10479" class="Bound">B≲A</a> <a id="10788" class="Symbol">(</a><a id="10789" href="plfa.Isomorphism.html#9220" class="Field">to</a> <a id="10792" href="plfa.Isomorphism.html#10479" class="Bound">B≲A</a> <a id="10796" href="plfa.Isomorphism.html#10604" class="Bound">y</a><a id="10797" class="Symbol">)</a>
+        <a id="10807" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">≡⟨</a> <a id="10810" href="/2019-08-31/Isomorphism/#9260" class="Field">from∘to</a> <a id="10818" href="plfa.Isomorphism.html#10479" class="Bound">B≲A</a> <a id="10822" href="plfa.Isomorphism.html#10604" class="Bound">y</a> <a id="10824" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2714" class="Function Operator">⟩</a>
+          <a id="10836" href="/2019-08-31/Isomorphism/#10604" class="Bound">y</a>
+        <a id="10846" href="https://agda.github.io/agda-stdlib/v1.1/Relation.Binary.PropositionalEquality.Core.html#2892" class="Function Operator">∎</a><a id="10847" class="Symbol">}</a>
+    <a id="10853" class="Symbol">}</a>
+</pre>
+<p>The first three components are copied from the embedding, while the
+last combines the left inverse of <code class="highlighter-rouge">B ≲ A</code> with the equivalences of
+the <code class="highlighter-rouge">to</code> and <code class="highlighter-rouge">from</code> components from the two embeddings to obtain
+the right inverse of the isomorphism.</p>
+
+<h2 id="equational-reasoning-for-embedding">Equational reasoning for embedding</h2>
+
+<p>We can also support tabular reasoning for embedding,
+analogous to that used for isomorphism:</p>
+
+<pre class="Agda"><a id="11235" class="Keyword">module</a> <a id="≲-Reasoning"></a><a id="11242" href="/2019-08-31/Isomorphism/#11242" class="Module">≲-Reasoning</a> <a id="11254" class="Keyword">where</a>
+
+  <a id="11263" class="Keyword">infix</a>  <a id="11270" class="Number">1</a> <a id="11272" href="/2019-08-31/Isomorphism/#11318" class="Function Operator">≲-begin_</a>
+  <a id="11283" class="Keyword">infixr</a> <a id="11290" class="Number">2</a> <a id="11292" href="/2019-08-31/Isomorphism/#11402" class="Function Operator">_≲⟨_⟩_</a>
+  <a id="11301" class="Keyword">infix</a>  <a id="11308" class="Number">3</a> <a id="11310" href="/2019-08-31/Isomorphism/#11521" class="Function Operator">_≲-∎</a>
+
+  <a id="≲-Reasoning.≲-begin_"></a><a id="11318" href="/2019-08-31/Isomorphism/#11318" class="Function Operator">≲-begin_</a> <a id="11327" class="Symbol">:</a> <a id="11329" class="Symbol">∀</a> <a id="11331" class="Symbol">{</a><a id="11332" href="plfa.Isomorphism.html#11332" class="Bound">A</a> <a id="11334" href="plfa.Isomorphism.html#11334" class="Bound">B</a> <a id="11336" class="Symbol">:</a> <a id="11338" class="PrimitiveType">Set</a><a id="11341" class="Symbol">}</a>
+    <a id="11347" class="Symbol">→</a> <a id="11349" href="/2019-08-31/Isomorphism/#11332" class="Bound">A</a> <a id="11351" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="11353" href="plfa.Isomorphism.html#11334" class="Bound">B</a>
+      <a id="11361" class="Comment">-----</a>
+    <a id="11371" class="Symbol">→</a> <a id="11373" href="/2019-08-31/Isomorphism/#11332" class="Bound">A</a> <a id="11375" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="11377" href="plfa.Isomorphism.html#11334" class="Bound">B</a>
+  <a id="11381" href="/2019-08-31/Isomorphism/#11318" class="Function Operator">≲-begin</a> <a id="11389" href="plfa.Isomorphism.html#11389" class="Bound">A≲B</a> <a id="11393" class="Symbol">=</a> <a id="11395" href="plfa.Isomorphism.html#11389" class="Bound">A≲B</a>
+
+  <a id="≲-Reasoning._≲⟨_⟩_"></a><a id="11402" href="/2019-08-31/Isomorphism/#11402" class="Function Operator">_≲⟨_⟩_</a> <a id="11409" class="Symbol">:</a> <a id="11411" class="Symbol">∀</a> <a id="11413" class="Symbol">(</a><a id="11414" href="plfa.Isomorphism.html#11414" class="Bound">A</a> <a id="11416" class="Symbol">:</a> <a id="11418" class="PrimitiveType">Set</a><a id="11421" class="Symbol">)</a> <a id="11423" class="Symbol">{</a><a id="11424" href="plfa.Isomorphism.html#11424" class="Bound">B</a> <a id="11426" href="plfa.Isomorphism.html#11426" class="Bound">C</a> <a id="11428" class="Symbol">:</a> <a id="11430" class="PrimitiveType">Set</a><a id="11433" class="Symbol">}</a>
+    <a id="11439" class="Symbol">→</a> <a id="11441" href="/2019-08-31/Isomorphism/#11414" class="Bound">A</a> <a id="11443" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="11445" href="plfa.Isomorphism.html#11424" class="Bound">B</a>
+    <a id="11451" class="Symbol">→</a> <a id="11453" href="/2019-08-31/Isomorphism/#11424" class="Bound">B</a> <a id="11455" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="11457" href="plfa.Isomorphism.html#11426" class="Bound">C</a>
+      <a id="11465" class="Comment">-----</a>
+    <a id="11475" class="Symbol">→</a> <a id="11477" href="/2019-08-31/Isomorphism/#11414" class="Bound">A</a> <a id="11479" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="11481" href="plfa.Isomorphism.html#11426" class="Bound">C</a>
+  <a id="11485" href="/2019-08-31/Isomorphism/#11485" class="Bound">A</a> <a id="11487" href="plfa.Isomorphism.html#11402" class="Function Operator">≲⟨</a> <a id="11490" href="plfa.Isomorphism.html#11490" class="Bound">A≲B</a> <a id="11494" href="plfa.Isomorphism.html#11402" class="Function Operator">⟩</a> <a id="11496" href="plfa.Isomorphism.html#11496" class="Bound">B≲C</a> <a id="11500" class="Symbol">=</a> <a id="11502" href="plfa.Isomorphism.html#9751" class="Function">≲-trans</a> <a id="11510" href="plfa.Isomorphism.html#11490" class="Bound">A≲B</a> <a id="11514" href="plfa.Isomorphism.html#11496" class="Bound">B≲C</a>
+
+  <a id="≲-Reasoning._≲-∎"></a><a id="11521" href="/2019-08-31/Isomorphism/#11521" class="Function Operator">_≲-∎</a> <a id="11526" class="Symbol">:</a> <a id="11528" class="Symbol">∀</a> <a id="11530" class="Symbol">(</a><a id="11531" href="plfa.Isomorphism.html#11531" class="Bound">A</a> <a id="11533" class="Symbol">:</a> <a id="11535" class="PrimitiveType">Set</a><a id="11538" class="Symbol">)</a>
+      <a id="11546" class="Comment">-----</a>
+    <a id="11556" class="Symbol">→</a> <a id="11558" href="/2019-08-31/Isomorphism/#11531" class="Bound">A</a> <a id="11560" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="11562" href="plfa.Isomorphism.html#11531" class="Bound">A</a>
+  <a id="11566" href="/2019-08-31/Isomorphism/#11566" class="Bound">A</a> <a id="11568" href="plfa.Isomorphism.html#11521" class="Function Operator">≲-∎</a> <a id="11572" class="Symbol">=</a> <a id="11574" href="plfa.Isomorphism.html#9619" class="Function">≲-refl</a>
+
+<a id="11582" class="Keyword">open</a> <a id="11587" href="/2019-08-31/Isomorphism/#11242" class="Module">≲-Reasoning</a>
+</pre>
+<h4 id="exercise--implies-">Exercise <code class="highlighter-rouge">≃-implies-≲</code></h4>
+
+<p>Show that every isomorphism implies an embedding.</p>
+<pre class="Agda"><a id="11687" class="Keyword">postulate</a>
+  <a id="≃-implies-≲"></a><a id="11699" href="/2019-08-31/Isomorphism/#11699" class="Postulate">≃-implies-≲</a> <a id="11711" class="Symbol">:</a> <a id="11713" class="Symbol">∀</a> <a id="11715" class="Symbol">{</a><a id="11716" href="plfa.Isomorphism.html#11716" class="Bound">A</a> <a id="11718" href="plfa.Isomorphism.html#11718" class="Bound">B</a> <a id="11720" class="Symbol">:</a> <a id="11722" class="PrimitiveType">Set</a><a id="11725" class="Symbol">}</a>
+    <a id="11731" class="Symbol">→</a> <a id="11733" href="/2019-08-31/Isomorphism/#11716" class="Bound">A</a> <a id="11735" href="plfa.Isomorphism.html#4359" class="Record Operator">≃</a> <a id="11737" href="plfa.Isomorphism.html#11718" class="Bound">B</a>
+      <a id="11745" class="Comment">-----</a>
+    <a id="11755" class="Symbol">→</a> <a id="11757" href="/2019-08-31/Isomorphism/#11716" class="Bound">A</a> <a id="11759" href="plfa.Isomorphism.html#9180" class="Record Operator">≲</a> <a id="11761" href="plfa.Isomorphism.html#11718" class="Bound">B</a>
+</pre>
+<pre class="Agda"><a id="11772" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="iff">Exercise <code class="highlighter-rouge">_⇔_</code></h4>
+
+<p>Define equivalence of propositions (also known as “if and only if”) as follows:</p>
+<pre class="Agda"><a id="11912" class="Keyword">record</a> <a id="_⇔_"></a><a id="11919" href="/2019-08-31/Isomorphism/#11919" class="Record Operator">_⇔_</a> <a id="11923" class="Symbol">(</a><a id="11924" href="plfa.Isomorphism.html#11924" class="Bound">A</a> <a id="11926" href="plfa.Isomorphism.html#11926" class="Bound">B</a> <a id="11928" class="Symbol">:</a> <a id="11930" class="PrimitiveType">Set</a><a id="11933" class="Symbol">)</a> <a id="11935" class="Symbol">:</a> <a id="11937" class="PrimitiveType">Set</a> <a id="11941" class="Keyword">where</a>
+  <a id="11949" class="Keyword">field</a>
+    <a id="_⇔_.to"></a><a id="11959" href="/2019-08-31/Isomorphism/#11959" class="Field">to</a>   <a id="11964" class="Symbol">:</a> <a id="11966" href="plfa.Isomorphism.html#11924" class="Bound">A</a> <a id="11968" class="Symbol">→</a> <a id="11970" href="plfa.Isomorphism.html#11926" class="Bound">B</a>
+    <a id="_⇔_.from"></a><a id="11976" href="/2019-08-31/Isomorphism/#11976" class="Field">from</a> <a id="11981" class="Symbol">:</a> <a id="11983" href="plfa.Isomorphism.html#11926" class="Bound">B</a> <a id="11985" class="Symbol">→</a> <a id="11987" href="plfa.Isomorphism.html#11924" class="Bound">A</a>
+</pre>
+<p>Show that equivalence is reflexive, symmetric, and transitive.</p>
+
+<pre class="Agda"><a id="12061" class="Comment">-- Your code goes here</a>
+</pre>
+<h4 id="Bin-embedding">Exercise <code class="highlighter-rouge">Bin-embedding</code> (stretch)</h4>
+
+<p>Recall that Exercises
+<a href="/2019-08-31/Naturals/#Bin">Bin</a> and
+<a href="/2019-08-31/Induction/#Bin-laws">Bin-laws</a>
+define a datatype of bitstrings representing natural numbers:</p>
+<pre class="Agda"><a id="12330" class="Keyword">data</a> <a id="Bin"></a><a id="12335" href="/2019-08-31/Isomorphism/#12335" class="Datatype">Bin</a> <a id="12339" class="Symbol">:</a> <a id="12341" class="PrimitiveType">Set</a> <a id="12345" class="Keyword">where</a>
+  <a id="Bin.nil"></a><a id="12353" href="/2019-08-31/Isomorphism/#12353" class="InductiveConstructor">nil</a> <a id="12357" class="Symbol">:</a> <a id="12359" href="plfa.Isomorphism.html#12335" class="Datatype">Bin</a>
+  <a id="Bin.x0_"></a><a id="12365" href="/2019-08-31/Isomorphism/#12365" class="InductiveConstructor Operator">x0_</a> <a id="12369" class="Symbol">:</a> <a id="12371" href="plfa.Isomorphism.html#12335" class="Datatype">Bin</a> <a id="12375" class="Symbol">→</a> <a id="12377" href="plfa.Isomorphism.html#12335" class="Datatype">Bin</a>
+  <a id="Bin.x1_"></a><a id="12383" href="/2019-08-31/Isomorphism/#12383" class="InductiveConstructor Operator">x1_</a> <a id="12387" class="Symbol">:</a> <a id="12389" href="plfa.Isomorphism.html#12335" class="Datatype">Bin</a> <a id="12393" class="Symbol">→</a> <a id="12395" href="plfa.Isomorphism.html#12335" class="Datatype">Bin</a>
+</pre>
+<p>And ask you to define the following functions</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>to : ℕ → Bin
+from : Bin → ℕ
+</code></pre></div></div>
+
+<p>which satisfy the following property:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from (to n) ≡ n
+</code></pre></div></div>
+
+<p>Using the above, establish that there is an embedding of <code class="highlighter-rouge">ℕ</code> into <code class="highlighter-rouge">Bin</code>.</p>
+<pre class="Agda"><a id="12624" class="Comment">-- Your code goes here</a>
+</pre>
+<p>Why do <code class="highlighter-rouge">to</code> and <code class="highlighter-rouge">from</code> not form an isomorphism?</p>
+
+<h2 id="standard-library">Standard library</h2>
+
+<p>Definitions similar to those in this chapter can be found in the standard library:</p>
+<pre class="Agda"><a id="12809" class="Keyword">import</a> <a id="12816" href="https://agda.github.io/agda-stdlib/v1.1/Function.html" class="Module">Function</a> <a id="12825" class="Keyword">using</a> <a id="12831" class="Symbol">(</a><a id="12832" href="https://agda.github.io/agda-stdlib/v1.1/Function.html#1099" class="Function Operator">_∘_</a><a id="12835" class="Symbol">)</a>
+<a id="12837" class="Keyword">import</a> <a id="12844" href="https://agda.github.io/agda-stdlib/v1.1/Function.Inverse.html" class="Module">Function.Inverse</a> <a id="12861" class="Keyword">using</a> <a id="12867" class="Symbol">(</a><a id="12868" href="https://agda.github.io/agda-stdlib/v1.1/Function.Inverse.html#2229" class="Function Operator">_↔_</a><a id="12871" class="Symbol">)</a>
+<a id="12873" class="Keyword">import</a> <a id="12880" href="https://agda.github.io/agda-stdlib/v1.1/Function.LeftInverse.html" class="Module">Function.LeftInverse</a> <a id="12901" class="Keyword">using</a> <a id="12907" class="Symbol">(</a><a id="12908" href="https://agda.github.io/agda-stdlib/v1.1/Function.LeftInverse.html#2682" class="Function Operator">_↞_</a><a id="12911" class="Symbol">)</a>
+</pre>
+<p>The standard library <code class="highlighter-rouge">_↔_</code> and <code class="highlighter-rouge">_↞_</code> correspond to our <code class="highlighter-rouge">_≃_</code> and
+<code class="highlighter-rouge">_≲_</code>, respectively, but those in the standard library are less
+convenient, since they depend on a nested record structure and are
+parameterised with regard to an arbitrary notion of equivalence.</p>
+
+<h2 id="unicode">Unicode</h2>
+
+<p>This chapter uses the following unicode:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>∘  U+2218  RING OPERATOR (\o, \circ, \comp)
+λ  U+03BB  GREEK SMALL LETTER LAMBDA (\lambda, \Gl)
+≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~-)
+≲  U+2272  LESS-THAN OR EQUIVALENT TO (\&lt;~)
+⇔  U+21D4  LEFT RIGHT DOUBLE ARROW (\&lt;=&gt;)
+</code></pre></div></div>
+
+  </div>
+
+  <p style="text-align:center;">
+    
+    <a alt="Previous chapter" href="/2019-08-31/Equality/">Prev</a>
+    
+    
+    &bullet;
+    
+    
+    <a alt="Source code" href="https://github.com/plfa/plfa.github.io/blob/dev/src/plfa/Isomorphism.lagda.md">Source</a>
+    
+    
+    &bullet;
+    
+    
+    <a alt="Next chapter" href="/2019-08-31/Connectives/">Next</a>
+    
+</p>
+
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/2019-08-31/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Programming Language Foundations in Agda
+</h2><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Philip Wadler</li>
+          <li><a class="u-email" href="mailto:wadler@inf.ed.ac.uk">wadler@inf.ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wadler"><svg class="svg-icon"><use xlink:href="/2019-08-31/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wadler</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Wen Kokke</li>
+          <li><a class="u-email" href="mailto:wen.kokke@ed.ac.uk">wen.kokke@ed.ac.uk</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/wenkokke"><svg class="svg-icon"><use xlink:href="/2019-08-31/assets/minima-social-icons.svg#github"></use></svg> <span class="username">wenkokke</span></a></li><li><a href="https://www.twitter.com/wenkokke"><svg class="svg-icon"><use xlink:href="/2019-08-31/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">wenkokke</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div><div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Jeremy Siek</li>
+          <li><a class="u-email" href="mailto:jsiek@indiana.edu">jsiek@indiana.edu</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jsiek"><svg class="svg-icon"><use xlink:href="/2019-08-31/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jsiek</span></a></li><li><a href="https://www.twitter.com/jeremysiek"><svg class="svg-icon"><use xlink:href="/2019-08-31/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jeremysiek</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3"></div>
+    </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+  </div>
+</footer>
+<!-- Import jQuery -->
+<script type="text/javascript" src="/2019-08-31/assets/jquery.js"></script>
+
+<script type="text/javascript">
+
+ // Makes sandwhich menu works
+ $('.menu-icon').click(function(){
+   $('.trigger').toggle();
+ });
+
+ // Script which allows for foldable code blocks
+ $('div.foldable pre').each(function(){
+     var autoHeight = $(this).height();
+     var lineHeight = parseFloat($(this).css('line-height'));
+
+     var plus    = $("<div></div>");
+     var horLine = $("<div></div>");
+     var verLine = $("<div></div>");
+     $(this).prepend(plus);
+     plus.css({
+         'position'         : 'relative',
+         'float'            : 'right',
+         'right'            : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'width'            : lineHeight,
+         'height'           : lineHeight});
+     verLine.css({
+         'position'         : 'relative',
+         'height'           : lineHeight,
+         'width'            : '3px',
+         'background-color' : '#C1E0FF'});
+     horLine.css({
+         'position'         : 'relative',
+         'top'              : '-' + (0.5 * lineHeight + 1.5) + 'px',
+         'left'             : '-' + (0.5 * lineHeight - 1.5) + 'px',
+         'height'           : '3px',
+         'width'            : lineHeight,
+         'background-color' : '#C1E0FF'});
+     plus.append(verLine);
+     plus.append(horLine);
+
+     $(this).height(2.0 * lineHeight);
+     $(this).css('overflow','hidden');
+
+     $(this).click(function(){
+         if ($(this).height() == autoHeight) {
+             $(this).height(2.0 * lineHeight);
+             plus.show();
+         }
+         else {
+             $(this).height('auto');
+             plus.hide();
+         }
+     });
+ });
+</script>
+
+<!-- Import KaTeX -->
+<script type="text/javascript" src="/2019-08-31/assets/katex.js"></script>
+
+<!-- Script which renders TeX using KaTeX -->
+<script type="text/javascript">
+ $("script[type='math/tex']").replaceWith(
+     function(){
+         var tex = $(this).text();
+         return "<span class=\"inline-equation\">" +
+                katex.renderToString(tex) +
+                "</span>";
+     });
+ $("script[type='math/tex; mode=display']").replaceWith(
+     function(){
+         var tex = $(this).text().replace(/%.*?(\n|$)/g,"");
+         return "<div class=\"equation\">" +
+                katex.renderToString("\\displaystyle "+tex) +
+                "</div>";
+     });
+</script>
+</body>
+
+</html>

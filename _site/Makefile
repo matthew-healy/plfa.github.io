@@ -11,8 +11,9 @@ BUNDLE := $(RUBY) -S bundle
 JEKYLL := $(BUNDLE) exec jekyll
 HTMLPROOFER := $(BUNDLE) exec htmlproofer
 LUA_FILES := $(shell find . -type f -and -path '*/epub/*' -and -name '*.lua')
-RELEASE_VERSIONS := 2020-07-14
+RELEASE_VERSIONS := 2019-08-31 2020-07-14
 RELEASES := $(addsuffix /,$(RELEASE_VERSIONS))
+STABLE_VERSION := $(word $(words $(RELEASE_VERSIONS)),$(RELEASE_VERSIONS))
 
 ifeq ($(AGDA_STDLIB_VERSION),)
 AGDA_STDLIB_URL := https://agda.github.io/agda-stdlib/
@@ -49,7 +50,10 @@ build-incremental: $(MARKDOWN_FILES)
 	$(JEKYLL) build --incremental
 
 # Download PLFA web releases
-build-history: $(RELEASES)
+build-history: stable/ $(RELEASES)
+
+stable/: $(addprefix plfa.github.io-web-,$(addsuffix /,$(STABLE_VERSION)))
+	cd $< && $(JEKYLL) clean && $(JEKYLL) build --destination '../stable' --baseurl '/stable'
 
 # Download
 define build_release
@@ -71,7 +75,7 @@ $$(tmp_dir): $$(tmp_zip)
 
 $$(out): out = $(addsuffix /,$(1))
 $$(out): url = $(addprefix https://github.com/plfa/plfa.github.io/archive/web-,$(addsuffix .zip,$(1)))
-$$(out): tmp_zip = $(addprefix plfa.github.io-web-,$(addsuffix .zip,$(1)))
+$$(out): tmp_dir = $(addprefix plfa.github.io-web-,$(addsuffix /,$(1)))
 $$(out): baseurl = $(addprefix /,$(1))
 $$(out): $$(tmp_dir)
 	cd $$(tmp_dir) && $(JEKYLL) clean && $(JEKYLL) build --destination '../$$(out)' --baseurl '$$(baseurl)'
