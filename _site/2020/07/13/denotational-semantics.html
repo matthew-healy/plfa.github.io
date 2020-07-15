@@ -61,6 +61,8 @@
   <div class="post-content e-content" itemprop="articleBody">
     <p>We’re pleased to announce an entirely new part of the book, contributed by Jeremy G. Siek! You may have noticed his name appearing on the list of authors some months ago, or the chapters that make up Part 3 slowly making their appearance. Well, that’s all Jeremy’s work!</p>
 
+<!--more-->
+
 <p>Part 3 introduces denotational semantics, presenting the denotational semantics of the untyped lambda calculus. Our development is unusual in that emphasizes the use of intersection type systems as denotational models instead of the more traditional domain theory, but this choice allows us to build upon the simple type systems studied in Part 2.
 Part 3 also proves the basic properties of the denotational semantics using techniques and variations of the techniques introduced in Part 2. We prove the <em>soundness</em> of reduction with respect to the denotational semantics by showing that reduction preserves and reflects denotations. We prove <em>adequacy</em> of the denotational semantics using a logical-relations style proof with respect to a big-step semantics of the untyped calculus. Finally, with these results in hand, we prove a standardisation theorem, that reduction to weak-head normal form implies the termination of call-by-name evaluation.</p>
 
@@ -117,21 +119,22 @@ Part 3 also proves the basic properties of the denotational semantics using tech
     </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
   </div>
 </footer>
-<!-- Import jQuery -->
+<script type="text/javascript">
+     // Fix sandwich menu
+     $('.menu-icon').click(function(){
+         $('.trigger').toggle();
+     });
+    </script><!-- Import jQuery -->
 <script type="text/javascript" src="/assets/jquery.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.2/anchor.min.js" integrity="sha256-E4RlfxwyJVmkkk0szw7LYJxuPlp6evtPSBDlWHsYYL8=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-  anchors.add();
+ // Add anchors on DOMContentLoaded
+ document.addEventListener('DOMContentLoaded', function(event) {
+     anchors.add();
+ });
 </script>
 
 <script type="text/javascript">
-
- // Makes sandwich menu work
- $('.menu-icon').click(function(){
-   $('.trigger').toggle();
- });
-
  // Script which allows for foldable code blocks
  $('div.foldable pre').each(function(){
      var autoHeight = $(this).height();

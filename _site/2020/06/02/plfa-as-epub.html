@@ -8,15 +8,15 @@
 <meta name="generator" content="Jekyll v3.8.7" />
 <meta property="og:title" content="PLFA as EPUB" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="It has been just over a year and a half since this feature was first requested in #112…" />
-<meta property="og:description" content="It has been just over a year and a half since this feature was first requested in #112…" />
+<meta name="description" content="It has been just over a year and a half since this feature was first requested in #112… Thanks to hard work by Michael Reed, and a little elbow grease on our part, it is finally here! An EPUB version of PLFA!" />
+<meta property="og:description" content="It has been just over a year and a half since this feature was first requested in #112… Thanks to hard work by Michael Reed, and a little elbow grease on our part, it is finally here! An EPUB version of PLFA!" />
 <link rel="canonical" href="https://plfa.github.io/2020/06/02/plfa-as-epub.html" />
 <meta property="og:url" content="https://plfa.github.io/2020/06/02/plfa-as-epub.html" />
 <meta property="og:site_name" content="Programming Language Foundations in Agda" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-06-02T00:00:00+00:00" />
 <script type="application/ld+json">
-{"description":"It has been just over a year and a half since this feature was first requested in #112…","mainEntityOfPage":{"@type":"WebPage","@id":"https://plfa.github.io/2020/06/02/plfa-as-epub.html"},"@type":"BlogPosting","url":"https://plfa.github.io/2020/06/02/plfa-as-epub.html","headline":"PLFA as EPUB","dateModified":"2020-06-02T00:00:00+00:00","datePublished":"2020-06-02T00:00:00+00:00","@context":"https://schema.org"}</script>
+{"description":"It has been just over a year and a half since this feature was first requested in #112… Thanks to hard work by Michael Reed, and a little elbow grease on our part, it is finally here! An EPUB version of PLFA!","mainEntityOfPage":{"@type":"WebPage","@id":"https://plfa.github.io/2020/06/02/plfa-as-epub.html"},"@type":"BlogPosting","url":"https://plfa.github.io/2020/06/02/plfa-as-epub.html","headline":"PLFA as EPUB","dateModified":"2020-06-02T00:00:00+00:00","datePublished":"2020-06-02T00:00:00+00:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css"></head>
 <body><header class="site-header" role="banner">
@@ -59,12 +59,9 @@
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <p>It has been just over a year and a half since this feature was first requested in <a href="https://github.com/plfa/plfa.github.io/issues/112">#112</a>…</p>
+    <p>It has been just over a year and a half since this feature was first requested in <a href="https://github.com/plfa/plfa.github.io/issues/112">#112</a>… Thanks to hard work by <a href="https://github.com/mreed20">Michael Reed</a>, and a little elbow grease on our part, it is finally here! <a href="https://plfa.github.io/out/epub/plfa.epub">An EPUB version of PLFA!</a></p>
 
-<p>Thanks to hard work by <a href="https://github.com/mreed20">Michael Reed</a>, and a little elbow grease on our part, it is finally here!</p>
-
-<p><a href="https://plfa.github.io/out/epub/plfa.epub">An EPUB version of PLFA!</a></p>
-
+<!--more-->
 
   </div><a class="u-url" href="/2020/06/02/plfa-as-epub.html" hidden></a>
 </article>
@@ -115,21 +112,22 @@
     </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
   </div>
 </footer>
-<!-- Import jQuery -->
+<script type="text/javascript">
+     // Fix sandwich menu
+     $('.menu-icon').click(function(){
+         $('.trigger').toggle();
+     });
+    </script><!-- Import jQuery -->
 <script type="text/javascript" src="/assets/jquery.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.2/anchor.min.js" integrity="sha256-E4RlfxwyJVmkkk0szw7LYJxuPlp6evtPSBDlWHsYYL8=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-  anchors.add();
+ // Add anchors on DOMContentLoaded
+ document.addEventListener('DOMContentLoaded', function(event) {
+     anchors.add();
+ });
 </script>
 
 <script type="text/javascript">
-
- // Makes sandwich menu work
- $('.menu-icon').click(function(){
-   $('.trigger').toggle();
- });
-
  // Script which allows for foldable code blocks
  $('div.foldable pre').each(function(){
      var autoHeight = $(this).height();

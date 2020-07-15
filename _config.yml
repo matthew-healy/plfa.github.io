@@ -53,6 +53,7 @@ baseurl: ""
 url: "https://plfa.github.io"
 markdown: kramdown
 theme: minima
+excerpt_separator: <!--more-->
 exclude:
   - "hs/"
   - "extra/"

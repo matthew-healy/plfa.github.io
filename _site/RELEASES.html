@@ -63,13 +63,13 @@
 
 
   <div class="post-content">
-    <h1 id="how-to-create-a-new-release">How to create a new release</h1>
+      <h1 id="how-to-create-a-new-release">How to create a new release</h1>
 
 <p>For a project such as PLFA, <a href="https://semver.org/">Semantic Versioning</a> doesn’t make a huge amount of sense. Instead, we’ve adopted <a href="https://calver.org">Calendar Versioning</a>, following, e.g., <a href="https://www.ubuntu.com">Ubuntu</a>. PLFA versions are of the form <code class="language-plaintext highlighter-rouge">YY.0M</code>, where <code class="language-plaintext highlighter-rouge">YY</code> is the short year, and <code class="language-plaintext highlighter-rouge">0M</code> is the zero-padded month. For each release, there are two tags in the repository:</p>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">dev-YY0M</code>: a copy of the contents of the <code class="language-plaintext highlighter-rouge">dev</code> branch at the time of release; and</li>
-  <li><code class="language-plaintext highlighter-rouge">web-YY0M</code>: a copy of the web version of PLFA only.</li>
+  <li><code class="language-plaintext highlighter-rouge">dev-YY.0M</code>: a copy of the contents of the <code class="language-plaintext highlighter-rouge">dev</code> branch at the time of release; and</li>
+  <li><code class="language-plaintext highlighter-rouge">web-YY.0M</code>: a copy of the web version of PLFA only.</li>
 </ul>
 
 <p>The former contains everything you’d need to work with that version of PLFA, whereas the latter consists only of the relevant files to deploy a web version of PLFA.</p>
@@ -77,11 +77,11 @@
 <p>There are several steps to creating a new release for PLFA:</p>
 
 <ul class="task-list">
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Create a new tag <code class="language-plaintext highlighter-rouge">dev-YY0M</code> of the <code class="language-plaintext highlighter-rouge">dev</code> branch.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Create a new tag <code class="language-plaintext highlighter-rouge">web-YY0M</code> of the <code class="language-plaintext highlighter-rouge">master</code> branch.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Create a new tag <code class="language-plaintext highlighter-rouge">dev-YY.0M</code> of the <code class="language-plaintext highlighter-rouge">dev</code> branch.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Create a new tag <code class="language-plaintext highlighter-rouge">web-YY.0M</code> of the <code class="language-plaintext highlighter-rouge">master</code> branch.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Push the new tags.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Draft a new release <a href="https://github.com/plfa/plfa.github.io/releases">on GitHub</a> linked to the <code class="language-plaintext highlighter-rouge">dev-YY0M</code> tag.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Add the release version <code class="language-plaintext highlighter-rouge">YY0M</code> to the end of the <code class="language-plaintext highlighter-rouge">RELEASE_VERSIONS</code> variable in the Makefile.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Draft a new release <a href="https://github.com/plfa/plfa.github.io/releases">on GitHub</a> linked to the <code class="language-plaintext highlighter-rouge">dev-YY.0M</code> tag.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Add the release version <code class="language-plaintext highlighter-rouge">YY.0M</code> to the end of the <code class="language-plaintext highlighter-rouge">RELEASE_VERSIONS</code> variable in the Makefile.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Write an announcement for the release in the <code class="language-plaintext highlighter-rouge">_posts</code> folder, describing any major changes.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Run <code class="language-plaintext highlighter-rouge">make build build-history test</code> and deal with any problems.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Commit and push.</li>
@@ -147,21 +147,22 @@
     </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
   </div>
 </footer>
-<!-- Import jQuery -->
+<script type="text/javascript">
+     // Fix sandwich menu
+     $('.menu-icon').click(function(){
+         $('.trigger').toggle();
+     });
+    </script><!-- Import jQuery -->
 <script type="text/javascript" src="/assets/jquery.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.2/anchor.min.js" integrity="sha256-E4RlfxwyJVmkkk0szw7LYJxuPlp6evtPSBDlWHsYYL8=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-  anchors.add();
+ // Add anchors on DOMContentLoaded
+ document.addEventListener('DOMContentLoaded', function(event) {
+     anchors.add();
+ });
 </script>
 
 <script type="text/javascript">
-
- // Makes sandwich menu work
- $('.menu-icon').click(function(){
-   $('.trigger').toggle();
- });
-
  // Script which allows for foldable code blocks
  $('div.foldable pre').each(function(){
      var autoHeight = $(this).height();

@@ -73,7 +73,7 @@
 
 
   <div class="post-content">
-    <pre class="Agda"><a id="209" class="Keyword">module</a> <a id="216" href="/ContextualEquivalence/" class="Module">plfa.part3.ContextualEquivalence</a> <a id="249" class="Keyword">where</a>
+      <pre class="Agda"><a id="209" class="Keyword">module</a> <a id="216" href="/ContextualEquivalence/" class="Module">plfa.part3.ContextualEquivalence</a> <a id="249" class="Keyword">where</a>
 </pre>
 <h2 id="imports">Imports</h2>
 
@@ -251,21 +251,22 @@ so we conclude that</p>
     </div>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
   </div>
 </footer>
-<!-- Import jQuery -->
+<script type="text/javascript">
+     // Fix sandwich menu
+     $('.menu-icon').click(function(){
+         $('.trigger').toggle();
+     });
+    </script><!-- Import jQuery -->
 <script type="text/javascript" src="/assets/jquery.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.2/anchor.min.js" integrity="sha256-E4RlfxwyJVmkkk0szw7LYJxuPlp6evtPSBDlWHsYYL8=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-  anchors.add();
+ // Add anchors on DOMContentLoaded
+ document.addEventListener('DOMContentLoaded', function(event) {
+     anchors.add();
+ });
 </script>
 
 <script type="text/javascript">
-
- // Makes sandwich menu work
- $('.menu-icon').click(function(){
-   $('.trigger').toggle();
- });
-
  // Script which allows for foldable code blocks
  $('div.foldable pre').each(function(){
      var autoHeight = $(this).height();

@@ -1,6 +1,7 @@
 ---
 layout : post
-title  : "Praise for PLFA!"
+title  : "Praise for PLFA"
+short  : true
 ---
 
 [*Types and Semantics for Programming Languages*][TSPL-2019], the course we teach in Edinburgh, was shortlisted as an Outstanding Course by the [Edinburgh University Student Association][EUSA-2020] (Runner Up)!
@@ -11,3 +12,5 @@ title  : "Praise for PLFA!"
 
 [TSPL-2019]: https://plfa.github.io/20.07/TSPL/2019/
 [EUSA-2020]: https://www.eusa.ed.ac.uk/representation/campaigns/teachingawards2020/
+
+<!--more-->
